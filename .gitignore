@@ -1,0 +1,30 @@
+# Visual Studio / .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.dll
+*.exe
+*.pdb
+
+# Configuration
+appsettings.Development.json
+appsettings.Local.json
+
+# Tickets PDF générés
+Tickets/
+*.pdf
+
+# Fichiers OS
+.DS_Store
+Thumbs.db
+
+# Rider/VS Code
+.idea/
+.vscode/
+
+# NuGet
+packages/
+*.nupkg
+/src/CavisteApp.WPF/appsettings.Development.json
