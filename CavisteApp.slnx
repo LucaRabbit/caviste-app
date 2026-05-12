@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CavisteApp.Api/CavisteApp.Api.csproj" Id="aeda6a71-e237-4d3d-86af-694ab74acbc0" />
+    <Project Path="src/CavisteApp.DTOs/CavisteApp.DTOs.csproj" Id="31017d26-dcc8-40f3-9dab-1ec162d073d0" />
+    <Project Path="src/CavisteApp.WPF/CavisteApp.WPF.csproj" Id="c95b26e4-18c0-4fe1-995e-9a90dcfaf5d6" />
+  </Folder>
+</Solution>
