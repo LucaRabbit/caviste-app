@@ -1,0 +1,51 @@
+﻿<Window x:Class="CavisteApp.WPF.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Caviste App - Connexion"
+        Height="350" Width="400"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="Caviste App"
+                   FontSize="24" FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,30"/>
+
+        <StackPanel Grid.Row="1" Margin="0,0,0,15">
+            <TextBlock Text="Login" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="5"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,0,0,15">
+            <TextBlock Text="Mot de passe" Margin="0,0,0,5"/>
+            <PasswordBox x:Name="PasswordBox"
+                         Padding="5"
+                         PasswordChanged="PasswordBox_PasswordChanged"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="3"
+                   Text="{Binding ErrorMessage}"
+                   Foreground="Red"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,10"/>
+
+        <Button Grid.Row="5"
+                Content="Se connecter"
+                Command="{Binding LoginCommand}"
+                Padding="10"
+                Background="#7B1F2D" Foreground="White"
+                FontWeight="Bold"
+                IsDefault="True"/>
+    </Grid>
+</Window>

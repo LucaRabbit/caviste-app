@@ -1,0 +1,66 @@
+﻿using System.IO;
+using System.Windows;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using CavisteApp.WPF.Services;
+using CavisteApp.WPF.Services.ApiClient;
+using CavisteApp.WPF.ViewModels;
+using CavisteApp.WPF.Views;
+
+namespace CavisteApp.WPF;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
+{
+    public static IServiceProvider Services { get; private set; } = null!;
+    public static IConfiguration Configuration { get; private set; } = null!;
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+
+        // Configuration
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("appsettings.Development.json", optional: true)
+            .Build();
+
+        Configuration = builder;
+
+        // Ajouter les variables d'environnement
+        var services = new ServiceCollection();
+        ConfigureServices(services);
+        Services = services.BuildServiceProvider();
+
+        // Afficher la fenêtre de login
+        var loginWindow = Services.GetRequiredService<LoginWindow>();
+        loginWindow.Show();
+    }
+
+    private void ConfigureServices(IServiceCollection services)
+    {
+        services.AddSingleton<IConfiguration>(Configuration);
+
+        // Services (singleton pour partager la session utilisateur)
+        services.AddSingleton<SessionService>();
+        services.AddTransient<AuthHttpHandler>();
+
+        var apiBaseUrl = Configuration["Api:BaseUrl"] ?? throw new InvalidOperationException("Configuration Api:BaseUrl manquante dans appsettings.");
+
+        // Client authentifié pour les appels API
+        services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
+        {
+            client.BaseAddress = new Uri(apiBaseUrl);
+        });
+
+        // ViewModels
+        services.AddTransient<LoginViewModel>();
+
+        // Vues
+        services.AddTransient<LoginWindow>();
+        services.AddTransient<MainWindow>();
+    }
+}

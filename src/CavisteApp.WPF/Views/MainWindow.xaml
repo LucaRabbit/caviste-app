@@ -1,0 +1,33 @@
+﻿<Window x:Class="CavisteApp.WPF.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Caviste App"
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barre du haut -->
+        <Border Grid.Row="0" Background="#7B1F2D" Padding="15">
+            <Grid>
+                <TextBlock x:Name="LblBienvenue"
+                           Foreground="White" FontSize="16" FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+                <Button Content="Déconnexion"
+                        HorizontalAlignment="Right"
+                        Padding="10,5"
+                        Click="BtnDeconnexion_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Zone principale -->
+        <TextBlock Grid.Row="1"
+                   Text=""
+                   FontSize="20"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+    </Grid>
+</Window>
