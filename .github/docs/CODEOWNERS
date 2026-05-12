@@ -1,0 +1,4 @@
+# .github/CODEOWNERS
+# Le chef d'équipe doit approuver toutes les Pull Requests.
+
+* @LucaRabbit
