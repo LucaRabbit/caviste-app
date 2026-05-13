@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using CavisteApp.WPF.Services;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace CavisteApp.WPF.ViewModels
@@ -19,6 +20,22 @@ namespace CavisteApp.WPF.ViewModels
             field = value;
             OnPropertyChanged(propertyName);
             return true;
+        }
+
+
+    }
+    public class MainViewModel : ViewModelBase
+    {
+        private readonly SessionService _sessionService;
+
+        public bool IsAdmin => _sessionService.IsAdmin;
+
+        public MainViewModel(SessionService sessionService)
+        {
+            _sessionService = sessionService;
+
+            // SessionChanged existe déjà dans ton service, on s'y abonne
+            _sessionService.SessionChanged += (s, e) => OnPropertyChanged(nameof(IsAdmin));
         }
     }
 }

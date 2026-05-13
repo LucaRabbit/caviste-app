@@ -3,7 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Caviste App"
         Height="600" Width="900"
-        WindowStartupLocation="CenterScreen">
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None">
 
     <Border Background="#272537"
             CornerRadius="20">
@@ -45,7 +48,11 @@
              Height="50"
              Foreground="White"
              FontSize="14"
-             Style="{StaticResource MenuButtonTheme}"/>
+             Style="{StaticResource MenuButtonTheme}"
+             Visibility="{Binding IsAdmin,
+                     Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                
                 <RadioButton Content="Panier"
              Height="50"
              Foreground="White"
@@ -53,6 +60,19 @@
              Style="{StaticResource MenuButtonTheme}"/>
 
             </StackPanel>
+            <TextBox
+                Width="250"
+                Height="40"
+                VerticalContentAlignment="Center"
+                HorizontalAlignment="Left"
+                Margin="5"
+                Grid.Column="1"
+                Style="{StaticResource TextBox}"
+                />
+            <ContentControl Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10"/>
+
 
             <TextBox Width="250"
                      Height="40"
@@ -66,7 +86,8 @@
             <Button Content="Déconnexion"
                         HorizontalAlignment="Left"
                         Padding="10,5"
-                        Click="BtnDeconnexion_Click" Margin="609,0,0,0" Grid.Column="1"/>
+                        Click="BtnDeconnexion_Click" Margin="577,0,0,0" Grid.Column="1"
+                    />
 
         </Grid>
     </Border>
