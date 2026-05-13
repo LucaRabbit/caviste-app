@@ -4,30 +4,70 @@
         Title="Caviste App"
         Height="600" Width="900"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <!-- Barre du haut -->
-        <Border Grid.Row="0" Background="#7B1F2D" Padding="15">
-            <Grid>
-                <TextBlock x:Name="LblBienvenue"
-                           Foreground="White" FontSize="16" FontWeight="Bold"
-                           VerticalAlignment="Center"/>
-                <Button Content="Déconnexion"
-                        HorizontalAlignment="Right"
+    <Border Background="#272537"
+            CornerRadius="20">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="75"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Gestion de stock"
+                   FontSize="22"
+                   Foreground="White"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Grid.ColumnSpan="2"
+                   Margin="20,0,0,0"/>
+            <StackPanel Grid.Row="1">
+                <RadioButton Content="Home"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"/>
+                <RadioButton Content="Vin"
+             Height="50"
+             Foreground="White"
+             FontSize="14"
+             Style="{StaticResource MenuButtonTheme}"/>
+                <RadioButton Content="Stock"
+             Height="50"
+             Foreground="White"
+             FontSize="14"
+             Style="{StaticResource MenuButtonTheme}"/>
+                <RadioButton Content="Fourniseur"
+             Height="50"
+             Foreground="White"
+             FontSize="14"
+             Style="{StaticResource MenuButtonTheme}"/>
+                <RadioButton Content="Panier"
+             Height="50"
+             Foreground="White"
+             FontSize="14"
+             Style="{StaticResource MenuButtonTheme}"/>
+
+            </StackPanel>
+
+            <TextBox Width="250"
+                     Height="40"
+                     HorizontalAlignment="Left"
+                     VerticalContentAlignment="Center"
+                     Margin="5"
+                     Grid.Column="1"
+                     Style="{StaticResource TextBox}"/>
+
+
+            <Button Content="Déconnexion"
+                        HorizontalAlignment="Left"
                         Padding="10,5"
-                        Click="BtnDeconnexion_Click"/>
-            </Grid>
-        </Border>
+                        Click="BtnDeconnexion_Click" Margin="609,0,0,0" Grid.Column="1"/>
 
-        <!-- Zone principale -->
-        <TextBlock Grid.Row="1"
-                   Text=""
-                   FontSize="20"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>
