@@ -1,40 +1,40 @@
-﻿using System.Windows.Input;
-namespace Projet_Commun.Core
+﻿using System.ComponentModel;
+using System.Windows.Input;
+
+namespace CavisteApp.WPF.Core;
+
+// Un ICommand simple pour les commandes de l'interface utilisateur
+public class RelayCommand : ICommand
 {
-    // ICommand
-    // interface du framework .NET Permet de lier une action à un élément de l'interface utilisateur
-    // (comme un bouton) via le data binding.
-    internal class RelayCommand : ICommand
+    private readonly Func<Task> _execute;
+    private readonly Func<bool>? _canExecute;
+    private bool _isBusy;
+
+    public RelayCommand(Func<Task> execute, Func<bool>? canExecute = null)
     {
-        // Action<object> :
-        // Délégué qui représente une méthode qui prend un paramètre de type object et ne retourne rien.
-        private Action<object> _execute;
-       private Func<object, bool> _canExecute;
-        // EventHandler :
-        // Délégué qui représente une méthode qui gère un événement,
-        // Prenant un objet sender et des EventArgs.
-        public event EventHandler CanExecuteChanged
+        _execute = execute;
+        _canExecute = canExecute ?? (() => true);
+    }
+
+    public event EventHandler? CanExecuteChanged;
+
+    public bool CanExecute(object? parameter) => !_isBusy && (_canExecute?.Invoke() ?? true);
+
+    public async void Execute(object? parameter)
+    {
+        _isBusy = true;
+        RaiseCanExecuteChanged();
+        try
         {
-            // CommandManager.RequerySuggested :
-            // Événement statique du CommandManager qui est déclenché lorsque le système
-            // Estime que les commandes doivent être réévaluées.
-            add { CommandManager.RequerySuggested += value;}
-            remove { CommandManager.RequerySuggested -= value;}
+            await _execute();
         }
-        
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        finally
         {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
-        public bool CanExecute(object parameter)
-        {
-            //|| : Opérateur logique OU
-            return _canExecute == null || _canExecute(parameter);
-        }
-        public void Execute(object parameter)
-        {
-            _execute(parameter);
+            _isBusy = false;
+            RaiseCanExecuteChanged();
         }
     }
+
+    public void RaiseCanExecuteChanged()
+        => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }

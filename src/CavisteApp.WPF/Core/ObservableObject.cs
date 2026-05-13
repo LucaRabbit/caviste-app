@@ -4,24 +4,29 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Projet_Commun.Core
-// INotifyPropertyChanged
-// interface du framework .NET Permet de notifier l'interface graphique qu'une de ses propriétés a changé
-// L'UI se mette à jour automatiquement via le data binding.
-{
-    internal class ObservableObject : INotifyPropertyChanged 
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        // [CallerMemberName]
-        // Permet de récupérer le nom de la propriété qui a appelé la méthode, évitant ainsi d'avoir à le spécifier manuellement.
-        protected void OnPropertyChanged([CallerMemberName]string Name=null)
-        {
-            // ?.Invoke : Permet d'invoquer l'événement de manière sécurisée,
-            // En vérifiant d'abord s'il y a des abonnés à l'événement avant de l'invoquer.
-            // new PropertyChangedEventArgs(Name) :
-            // Crée une nouvelle instance de PropertyChangedEventArgs avec le nom de la propriété qui a changé.
+namespace CavisteApp.WPF.Core;
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Name));
-        }
+/// <summary>
+/// Classe de base pour les objets observables qui implémentent INotifyPropertyChanged.
+/// Permet de notifier l'interface graphique qu'une propriété a changé, 
+/// permettant ainsi à l'UI de se mettre à jour automatiquement via le data binding.
+/// </summary>
+internal class ObservableObject : INotifyPropertyChanged
+{
+    /// <summary>
+    /// Événement déclenché lorsqu'une propriété change.
+    /// </summary>
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>
+    /// Notifie les abonnés que la propriété spécifiée a changé.
+    /// </summary>
+    /// <param name="name">
+    /// Nom de la propriété qui a changé. 
+    /// Récupéré automatiquement via [CallerMemberName].
+    /// </param>
+    protected void OnPropertyChanged([CallerMemberName] string? name = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

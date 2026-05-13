@@ -43,9 +43,7 @@
              Height="50"
              Foreground="White"
              FontSize="14"
-             Style="{StaticResource MenuButtonTheme}"
-                             Visibility="{Binding IsAdmin,
-        Converter={StaticResource BooleanToVisibilityConverter}}" />
+             Style="{StaticResource MenuButtonTheme}"/>
                 <RadioButton Content="Fourniseur"
              Height="50"
              Foreground="White"
@@ -88,11 +86,7 @@
             <Button Content="Déconnexion"
                         HorizontalAlignment="Left"
                         Padding="10,5"
-                        Click="BtnDeconnexion_Click" Margin="607,0,0,0" Grid.Column="1"
-                    Background="Transparent"
-                    BorderThickness="1"
-                    BorderBrush="Transparent"
-                    
+                        Click="BtnDeconnexion_Click" Margin="577,0,0,0" Grid.Column="1"
                     />
 
         </Grid>

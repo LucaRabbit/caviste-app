@@ -62,5 +62,6 @@ public partial class App : Application
         // Vues
         services.AddTransient<LoginWindow>();
         services.AddTransient<MainWindow>();
+        services.AddTransient<WineView>();
     }
 }

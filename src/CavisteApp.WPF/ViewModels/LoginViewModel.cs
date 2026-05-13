@@ -3,6 +3,7 @@ using System.Windows.Input;
 using CavisteApp.DTOs.Auth;
 using CavisteApp.WPF.Services;
 using CavisteApp.WPF.Services.ApiClient;
+using CavisteApp.WPF.Core;
 
 namespace CavisteApp.WPF.ViewModels;
 
