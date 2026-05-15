@@ -39,6 +39,12 @@ public class VentesController : ControllerBase
                 NombreLignes = v.Lignes.Count
             })
             .ToListAsync();
+
+        if (ventes == null || ventes.Count == 0)
+        {
+            return BadRequest("Aucune vente trouvée.");
+        }
+
         return Ok(ventes);
     }
 
@@ -67,9 +73,10 @@ public class VentesController : ControllerBase
                 }).ToList()
             })
             .FirstOrDefaultAsync();
+
         if (vente == null)
         {
-            return NotFound();
+            return BadRequest($"La vente avec Id '{id}' n'existe pas.");
         }
         return Ok(vente);
     }
@@ -87,7 +94,7 @@ public class VentesController : ControllerBase
         var client = await _context.Clients.FindAsync(request.ClientId);
         if (client == null)
         {
-            return BadRequest($"Client avec Id {request.ClientId} non trouvé.");
+            return BadRequest($"Le client avec Id '{request.ClientId}' n'existe pas.");
         }
 
         // Vérifier si la vente contient des lignes
@@ -104,7 +111,7 @@ public class VentesController : ControllerBase
         foreach (var ligne in request.Lignes)
         {
             if (!vins.TryGetValue(ligne.VinId, out var vin))
-                return BadRequest($"Le vin {ligne.VinId} n'existe pas ou est archivé.");
+                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
 
             if (vin.Stock < ligne.Quantite)
                 return BadRequest($"Stock insuffisant pour 'vin.Nom' (Stock disponible : {vin.Stock}).");
@@ -152,7 +159,7 @@ public class VentesController : ControllerBase
         var vente = await _context.Ventes.FindAsync(id);
         if (vente == null)
         {
-            return NotFound();
+            return BadRequest($"La vente avec Id '{id}' n'existe pas.");
         }
 
         // Suppression de la vente
