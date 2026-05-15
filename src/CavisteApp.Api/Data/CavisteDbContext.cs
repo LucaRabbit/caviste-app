@@ -50,7 +50,6 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
             entity.Property(c => c.Ville).HasMaxLength(100);
 
             entity.HasIndex(c => c.Email).IsUnique();
-
         });
 
         // Vente
@@ -58,6 +57,7 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
         {
             entity.HasKey(v => v.Id);
 
+            entity.Property(v => v.Date).ValueGeneratedOnAdd();
             entity.Property(v => v.MontantTotal).HasColumnType("decimal(18,2)");
 
             entity.HasOne(v => v.Client)
@@ -76,7 +76,9 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
         {
             entity.HasKey(l => l.Id);
 
-            entity.Property(l => l.PrixUnitaire).HasColumnType("decimal(18,2)");
+            entity.Property(l => l.VinNom).IsRequired().HasMaxLength(100);
+            entity.Property(l => l.Quantite).HasDefaultValue(1);
+            entity.Property(l => l.PrixUnitaire).HasColumnType("decimal(18,2)").IsRequired();
 
             entity.HasOne(l => l.Vente)
             .WithMany(v => v.Lignes)
@@ -87,6 +89,8 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
             .WithMany(v => v.LignesVente)
             .HasForeignKey(l => l.VinId)
             .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(l => new { l.VenteId, l.VinId }).IsUnique();
         });
 
         // Fournisseur
@@ -127,6 +131,6 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
             .WithMany(v => v.LignesCommande)
             .HasForeignKey(l => l.VinId)
             .OnDelete(DeleteBehavior.Restrict);
-         });
+        });
     }
 }
