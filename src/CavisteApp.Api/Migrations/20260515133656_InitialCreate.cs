@@ -252,7 +252,8 @@ namespace CavisteApp.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     MontantTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ClientId = table.Column<int>(type: "int", nullable: false),
                     UtilisateurId = table.Column<int>(type: "int", nullable: false)
@@ -360,7 +361,9 @@ namespace CavisteApp.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Quantite = table.Column<int>(type: "int", nullable: false),
+                    VinNom = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Quantite = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     PrixUnitaire = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     VenteId = table.Column<int>(type: "int", nullable: false),
                     VinId = table.Column<int>(type: "int", nullable: false)
@@ -442,9 +445,10 @@ namespace CavisteApp.Api.Migrations
                 column: "VinId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LignesVente_VenteId",
+                name: "IX_LignesVente_VenteId_VinId",
                 table: "LignesVente",
-                column: "VenteId");
+                columns: new[] { "VenteId", "VinId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_LignesVente_VinId",

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CavisteApp.Api.Migrations
 {
     [DbContext(typeof(CavisteDbContext))]
-    [Migration("20260512061616_InitialCreate")]
+    [Migration("20260515133656_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -268,7 +268,9 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantite")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<int>("VenteId")
                         .HasColumnType("int");
@@ -276,11 +278,17 @@ namespace CavisteApp.Api.Migrations
                     b.Property<int>("VinId")
                         .HasColumnType("int");
 
+                    b.Property<string>("VinNom")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("VenteId");
-
                     b.HasIndex("VinId");
+
+                    b.HasIndex("VenteId", "VinId")
+                        .IsUnique();
 
                     b.ToTable("LignesVente");
                 });
@@ -297,7 +305,10 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("Date"));
 
                     b.Property<decimal>("MontantTotal")
                         .HasColumnType("decimal(18,2)");
