@@ -72,7 +72,13 @@ builder.Services.AddCors(options =>
 });
 
 // Controllers + Swagger
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    // Configurer les options JSON pour sérialiser les enums en chaînes de caractères
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
