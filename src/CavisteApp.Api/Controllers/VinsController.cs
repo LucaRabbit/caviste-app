@@ -31,7 +31,7 @@ namespace CavisteApp.Api.Controllers
             var vin =  await _context.Vins
                 .ToListAsync();
 
-            return Ok(vinDto);
+            return Ok(vin);
         }
 
         // GET: api/vins/5
@@ -43,7 +43,7 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{Id}' n'existe pas.");
+                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             return Ok(vin);
@@ -56,7 +56,7 @@ namespace CavisteApp.Api.Controllers
             _context.Vins.Add(vin);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetByIdVinDto), new { id = vin.Id }, vin);
+            return CreatedAtAction(nameof(GetById), new { id = vin.Id }, vin);
         }
 
         // PUT: api/vins/5
@@ -66,7 +66,7 @@ namespace CavisteApp.Api.Controllers
         {
             if (id != vin.Id)
             {
-                return BadRequest($"Le vin avec Id '{Id}' n'existe pas.");
+                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             var existing = await _context.Vins.FindAsync(id);
@@ -95,7 +95,7 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{Id}' n'existe pas.");
+                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             _context.Vins.Remove(vin);
