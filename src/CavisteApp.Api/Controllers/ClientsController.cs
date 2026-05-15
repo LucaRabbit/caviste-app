@@ -23,7 +23,7 @@ namespace CavisteApp.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ClientDto>>> GetAllClientDto()
         {
             var client = await _context.Clients
                 .ToListAsync();
@@ -32,7 +32,7 @@ namespace CavisteApp.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClientDto>> GetById(int id)
+        public async Task<ActionResult<ClientDto>> GetByIdClientDto(int id)
         {
             var client = await _context.Clients
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -46,16 +46,16 @@ namespace CavisteApp.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ClientDto>> Create(Client client)
+        public async Task<ActionResult<ClientDto>> CreateClientDto(Client client)
         {
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = client.Id }, client);
+            return CreatedAtAction(nameof(GetByIdClientDto), new { id = client.Id }, client);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Client client
+        public async Task<IActionResult> UpdateClientDto(int id, Client client
             )
         {
             if (id != client.Id)
@@ -85,7 +85,7 @@ namespace CavisteApp.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteClientDto(int id)
         {
             var client = await _context.Clients.FindAsync(id);
 
@@ -100,7 +100,7 @@ namespace CavisteApp.Api.Controllers
             return NoContent();
         }
 
-        private static ClientDto MapToDto(ClientDto client)
+        private static ClientDto ClientMapToDto(ClientDto client)
         {
             return new ClientDto
             {

@@ -5,16 +5,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CavisteApp.DTOs.Vins
 {
-    public class VinDto
+    internal class CreerVinDto
     {
         [Required]
-        public int Id { get; set; }
-
-        [Required]
         public string Nom { get; set; } = string.Empty;
-
-        [Required]
-        public DateTime CreatedDate { get; set; }
 
         [Required]
         public decimal Prix { get; set; }
@@ -23,14 +17,9 @@ namespace CavisteApp.DTOs.Vins
         public int Stock { get; set; }
 
         [Required]
-        public int SeuilStockBas { get; set; }
+        public int SeuilStockBas { get; set; } = 5;
 
         [Required]
         public int Type { get; set; }
-
-        
-
-
-
     }
 }

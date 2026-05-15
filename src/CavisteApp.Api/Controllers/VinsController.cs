@@ -24,7 +24,7 @@ namespace CavisteApp.Api.Controllers
 
         // GET: api/
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VinDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<VinDto>>> GetAllVinDto()
         {
             var vin =  await _context.Vins
                 .Include(v => v.Type)
@@ -35,7 +35,7 @@ namespace CavisteApp.Api.Controllers
 
         // GET: api/vins/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VinDto>> GetById(int id)
+        public async Task<ActionResult<VinDto>> GetByIdVinDto(int id)
         {
             var vin = await _context.Vins
                 .Include(v => v.Type)
@@ -51,17 +51,17 @@ namespace CavisteApp.Api.Controllers
 
         // POST: api/vins
         [HttpPost]
-        public async Task<ActionResult<VinDto>> Create(Vin vin)
+        public async Task<ActionResult<VinDto>> CreateVinDto(Vin vin)
         {
             _context.Vins.Add(vin);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = vin.Id }, vin);
+            return CreatedAtAction(nameof(GetByIdVinDto), new { id = vin.Id }, vin);
         }
 
         // PUT: api/vins/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Vin vin)
+        public async Task<IActionResult> UpdateVinDto(int id, Vin vin)
         {
             if (id != vin.Id)
             {
@@ -87,7 +87,7 @@ namespace CavisteApp.Api.Controllers
 
         // DELETE: api/vins/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteVinDto(int id)
         {
             var vin = await _context.Vins.FindAsync(id);
 
@@ -102,7 +102,7 @@ namespace CavisteApp.Api.Controllers
             return NoContent();
         }
 
-        private static VinDto MapToDto(Vin vin)
+        private static VinDto VinMapToDto(Vin vin)
         {
             return new VinDto
             {
