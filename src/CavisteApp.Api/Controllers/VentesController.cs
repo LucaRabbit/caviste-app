@@ -83,13 +83,32 @@ public class VentesController : ControllerBase
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
+        // Vérifier si le client existe
         var client = await _context.Clients.FindAsync(request.ClientId);
         if (client == null)
         {
             return BadRequest($"Client avec Id {request.ClientId} non trouvé.");
         }
 
-        // TODO: Ajouter vérification que vins existent et ont stock suffisant avant de créer la vente
+        // Vérifier si la vente contient des lignes
+        if (request.Lignes is null || request.Lignes.Count == 0)
+            return BadRequest("Une vente doit contenir au moins une ligne.");
+
+        // Récuperer les vins des lignes
+        var vinIds = request.Lignes.Select(l => l.VinId).Distinct().ToList();
+        var vins = await _context.Vins
+            .Where(v => vinIds.Contains(v.Id))
+            .ToDictionaryAsync(v => v.Id);
+
+        // Vérifier que les vins existent et ont stock suffisant avant de créer la vente
+        foreach (var ligne in request.Lignes)
+        {
+            if (!vins.TryGetValue(ligne.VinId, out var vin))
+                return BadRequest($"Le vin {ligne.VinId} n'existe pas ou est archivé.");
+
+            if (vin.Stock < ligne.Quantite)
+                return BadRequest($"Stock insuffisant pour 'vin.Nom' (Stock disponible : {vin.Stock}).");
+        }
 
         // Créer la vente
         var vente = new Vente
