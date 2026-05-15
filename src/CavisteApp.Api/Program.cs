@@ -125,4 +125,12 @@ using (var scope = app.Services.CreateScope())
     await seeder.SeedAsync();
 }
 
+// Configurer les options JSON pour sérialiser les enums en chaînes de caractères
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
+
 app.Run();
