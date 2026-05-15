@@ -124,7 +124,11 @@ public class VentesController : ControllerBase
             }).ToList()
         };
 
-        // TODO: Decrementer le stock des vins et calculer le montant total de la vente
+        // Decrementer le stock des vins
+        foreach (var ligne in request.Lignes)
+        {
+            vins[ligne.VinId].Stock -= ligne.Quantite;
+        }
 
         // Calculer le montant total de la vente
         vente.CalculerMontantTotal();
@@ -173,7 +177,7 @@ public class VentesController : ControllerBase
             {
                 Id = l.Id,
                 VinId = l.VinId,
-                VinNom = l.Vin.Nom,
+                VinNom = l.VinNom,
                 Quantite = l.Quantite,
                 PrixUnitaire = l.PrixUnitaire
             }).ToList()
