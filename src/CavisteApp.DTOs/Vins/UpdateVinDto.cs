@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
-using CavisteApp.Api.Enums;
-
 
 namespace CavisteApp.DTOs.Vins
 {
@@ -22,6 +20,6 @@ namespace CavisteApp.DTOs.Vins
         public int SeuilStockBas { get; set; } = 5;
 
         [Required]
-        public TypeVin Type { get; set; }
+        public int Type { get; set; }
     }
 }
