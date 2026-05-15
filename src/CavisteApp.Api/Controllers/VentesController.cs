@@ -172,7 +172,9 @@ public class VentesController : ControllerBase
             Date = vente.Date,
             MontantTotal = vente.MontantTotal,
             ClientId = vente.ClientId,
-            ClientNom = vente.Client.Nom,
+            ClientNom = vente.Client?.Nom ?? string.Empty,
+            UtilisateurId = vente.UtilisateurId,
+            UtilisateurNom = vente.Utilisateur?.UserName ?? string.Empty,
             Lignes = vente.Lignes.Select(l => new LigneVenteDto
             {
                 Id = l.Id,
