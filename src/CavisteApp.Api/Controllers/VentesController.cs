@@ -186,7 +186,6 @@ public class VentesController : ControllerBase
             {
                 Id = l.Id,
                 VinId = l.VinId,
-                VinNom = l.VinNom,
                 Quantite = l.Quantite,
                 PrixUnitaire = l.PrixUnitaire
             }).ToList()
