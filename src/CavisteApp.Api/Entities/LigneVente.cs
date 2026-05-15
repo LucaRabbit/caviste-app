@@ -1,4 +1,6 @@
-﻿namespace CavisteApp.Api.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace CavisteApp.Api.Entities;
 
 public class LigneVente
 {
@@ -10,11 +12,15 @@ public class LigneVente
     public decimal PrixUnitaire { get; set; }
 
     public int VenteId { get; set; }
+    [JsonIgnore] // Pour éviter les références circulaires lors de la sérialisation
     public Vente Vente { get; set; } = null!;
 
+    // Référence au vin vendu (pour les détails et la validation du stock)
     public int VinId { get; set; }
+    [JsonIgnore] // Pour éviter les références circulaires lors de la sérialisation
     public Vin Vin { get; set; } = null!;
 
+    // Propriété calculée pour le sous-total de la ligne (quantité * prix unitaire)
     public decimal SousTotal => Quantite * PrixUnitaire;
 
 }
