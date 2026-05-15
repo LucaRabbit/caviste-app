@@ -3,6 +3,8 @@ using CavisteApp.Api.Entities;
 using CavisteApp.DTOs.Clients;
 using CavisteApp.DTOs.Vins;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using CavisteApp.Api.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +57,7 @@ namespace CavisteApp.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
         public async Task<IActionResult> UpdateClientDto(int id, Client client
             )
         {
@@ -85,6 +88,7 @@ namespace CavisteApp.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
         public async Task<IActionResult> DeleteClientDto(int id)
         {
             var client = await _context.Clients.FindAsync(id);
