@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CavisteApp.DTOs.Vins
 {
-    internal class CreerVinDto
+    public class CreerVinDto
     {
         [Required]
         public string Nom { get; set; } = string.Empty;
