@@ -28,10 +28,12 @@ namespace CavisteApp.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VinDto>>> GetAll()
         {
-            var vin =  await _context.Vins
+            var vins =  await _context.Vins
+                .AsNoTracking()
+                .OrderBy(v => v.Id)
                 .ToListAsync();
 
-            return Ok(vin);
+            return Ok(vins.Select(MapToDto));
         }
 
         // GET: api/vins/5
@@ -39,6 +41,7 @@ namespace CavisteApp.Api.Controllers
         public async Task<ActionResult<VinDto>> GetById(int id)
         {
             var vin = await _context.Vins
+                .AsNoTracking()
                 .FirstOrDefaultAsync(v => v.Id == id);
 
             if (vin == null)
@@ -46,41 +49,50 @@ namespace CavisteApp.Api.Controllers
                 return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
             }
 
-            return Ok(vin);
+            return Ok(MapToDto(vin));
         }
 
         // POST: api/vins
         [HttpPost]
-        public async Task<ActionResult<VinDto>> CreateVinDto(Vin vin)
+        public async Task<ActionResult<VinDto>> Create([FromBody] CreerVinDto request)
         {
+            var vin = new Vin
+            {
+                Nom = request.Nom,
+                Type = (Enums.TypeVin)request.Type,
+                Stock = request.Stock,
+                SeuilStockBas = request.SeuilStockBas,
+                Prix = request.Prix
+            };
+
             _context.Vins.Add(vin);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = vin.Id }, vin);
+            return CreatedAtAction(nameof(GetById), new { id = vin.Id }, MapToDto(vin));
         }
 
         // PUT: api/vins/5
         [HttpPut("{id}")]
         [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
-        public async Task<IActionResult> UpdateVinDto(int id, Vin vin)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateVinDto request)
         {
-            if (id != vin.Id)
+            var vin = await _context.Vins
+                .Where(v => v.Id == id)
+                .Select(v => new Vin
+                {
+                    Id = v.Id,
+                    Nom = request.Nom,
+                    Type = (Enums.TypeVin)request.Type,
+                    Stock = request.Stock,
+                    SeuilStockBas = request.SeuilStockBas,
+                    Prix = request.Prix
+                })
+                .FirstOrDefaultAsync();
+
+            if (vin == null)
             {
                 return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
             }
-
-            var existing = await _context.Vins.FindAsync(id);
-
-            if (existing == null)
-            {
-                return BadRequest($"Aucun vin trouvé.");
-            }
-
-            existing.Nom = vin.Nom;
-            existing.Type = vin.Type;
-            existing.Stock = vin.Stock;
-            existing.SeuilStockBas = vin.SeuilStockBas;
-            existing.Prix = vin.Prix;
             
             await _context.SaveChangesAsync();
             return NoContent();
