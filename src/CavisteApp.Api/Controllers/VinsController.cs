@@ -26,7 +26,7 @@ namespace CavisteApp.Api.Controllers
 
         // GET: api/
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VinDto>>> GetAllVinDto()
+        public async Task<ActionResult<IEnumerable<VinDto>>> GetAll()
         {
             var vin =  await _context.Vins
                 .ToListAsync();
@@ -36,7 +36,7 @@ namespace CavisteApp.Api.Controllers
 
         // GET: api/vins/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VinDto>> GetByIdVinDto(int id)
+        public async Task<ActionResult<VinDto>> GetById(int id)
         {
             var vin = await _context.Vins
                 .FirstOrDefaultAsync(v => v.Id == id);
@@ -89,7 +89,7 @@ namespace CavisteApp.Api.Controllers
         // DELETE: api/vins/5
         [HttpDelete("{id}")]
         [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
-        public async Task<IActionResult> DeleteVinDto(int id)
+        public async Task<IActionResult> DeleteVin(int id)
         {
             var vin = await _context.Vins.FindAsync(id);
 
@@ -104,7 +104,7 @@ namespace CavisteApp.Api.Controllers
             return NoContent();
         }
 
-        private static VinDto VinMapToDto(Vin vin)
+        private static VinDto MapToDto(Vin vin)
         {
             return new VinDto
             {
