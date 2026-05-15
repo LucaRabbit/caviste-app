@@ -27,10 +27,9 @@ namespace CavisteApp.Api.Controllers
         public async Task<ActionResult<IEnumerable<VinDto>>> GetAllVinDto()
         {
             var vin =  await _context.Vins
-                .Include(v => v.Type)
                 .ToListAsync();
 
-            return Ok(vin);
+            return Ok(vinDto);
         }
 
         // GET: api/vins/5
@@ -38,7 +37,6 @@ namespace CavisteApp.Api.Controllers
         public async Task<ActionResult<VinDto>> GetByIdVinDto(int id)
         {
             var vin = await _context.Vins
-                .Include(v => v.Type)
                 .FirstOrDefaultAsync(v => v.Id == id);
 
             if (vin == null)
