@@ -28,11 +28,6 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
 
             entity.Property(v => v.Nom).IsRequired().HasMaxLength(100);
             entity.Property(v => v.Prix).HasColumnType("decimal(18,2)");
-
-            entity.HasOne(v => v.Fournisseur)
-            .WithMany(f => f.Vins)
-            .HasForeignKey(v => v.FournisseurId)
-            .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Client

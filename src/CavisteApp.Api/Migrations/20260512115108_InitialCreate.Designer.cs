@@ -4,6 +4,7 @@ using CavisteApp.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CavisteApp.Api.Migrations
 {
     [DbContext(typeof(CavisteDbContext))]
-    partial class CavisteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260512115108_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -265,13 +268,7 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantite")
-<<<<<<< feature/Vin_Client_CRUD
                         .HasColumnType("int");
-=======
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
->>>>>>> dev
 
                     b.Property<int>("VenteId")
                         .HasColumnType("int");
@@ -279,27 +276,12 @@ namespace CavisteApp.Api.Migrations
                     b.Property<int>("VinId")
                         .HasColumnType("int");
 
-<<<<<<< feature/Vin_Client_CRUD
                     b.HasKey("Id");
 
                     b.HasIndex("VenteId");
 
                     b.HasIndex("VinId");
 
-=======
-                    b.Property<string>("VinNom")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VinId");
-
-                    b.HasIndex("VenteId", "VinId")
-                        .IsUnique();
-
->>>>>>> dev
                     b.ToTable("LignesVente");
                 });
 
@@ -315,16 +297,8 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
-<<<<<<< feature/Vin_Client_CRUD
                         .HasColumnType("datetime(6)");
 
-=======
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("Date"));
-
->>>>>>> dev
                     b.Property<decimal>("MontantTotal")
                         .HasColumnType("decimal(18,2)");
 
