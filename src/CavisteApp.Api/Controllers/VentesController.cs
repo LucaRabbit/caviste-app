@@ -25,11 +25,10 @@ public class VentesController : ControllerBase
 
     // GET api/vins
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<VenteResumeDto>>> GetAllVentes()
+    public async Task<ActionResult<IEnumerable<VenteResumeDto>>> GetAll()
     {
         var ventes = await _context.Ventes
             .Include(v => v.Client)
-            //.Include(v => v.Lignes)
             .OrderByDescending(v => v.Date)
             .Select(v => new VenteResumeDto
             {
@@ -45,7 +44,7 @@ public class VentesController : ControllerBase
 
     // GET api/ventes/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<VenteDto>> GetVenteById(int id)
+    public async Task<ActionResult<VenteDto>> GetById(int id)
     {
         var vente = await _context.Ventes
             .Include(v => v.Client)
@@ -77,7 +76,7 @@ public class VentesController : ControllerBase
 
     // POST api/ventes
     [HttpPost]
-    public async Task<ActionResult<VenteDto>> CreateVente([FromBody] CreerVenteDto request)
+    public async Task<ActionResult<VenteDto>> Create([FromBody] CreerVenteDto request)
     {
         // Récupérer l'utilisateur authentifié
         var userId = _userManager.GetUserId(User);
@@ -119,7 +118,7 @@ public class VentesController : ControllerBase
         await _context.Entry(vente).Reference(v => v.Client).LoadAsync();
         await _context.Entry(vente).Reference(v => v.Utilisateur).LoadAsync();
 
-        return CreatedAtAction(nameof(GetVenteById), new { id = vente.Id }, MapToDto(vente));
+        return CreatedAtAction(nameof(GetById), new { id = vente.Id }, MapToDto(vente));
     }
 
     // DELETE api/ventes/5
@@ -132,11 +131,16 @@ public class VentesController : ControllerBase
         {
             return NotFound();
         }
+
+        // Suppression de la vente
         _context.Ventes.Remove(vente);
+
+        // Sauvegarde
         await _context.SaveChangesAsync();
         return NoContent();
     }
 
+    // Mapping Dto
     private static VenteDto MapToDto(Vente vente)
     {
         return new VenteDto
