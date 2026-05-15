@@ -110,6 +110,16 @@ namespace CavisteApp.Api.Controllers
                 return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
             }
 
+            // Vérifier les relations avec les lignes de vente et de commande
+            var estUtilise = await _context.Set<LigneVente>().AnyAsync(li => li.VinId == id) ||
+                            await _context.Set<LigneCommande>().AnyAsync(li => li.VinId == id);
+
+            // Si le vin est utilisé dans des lignes de vente ou de commande, empêcher la suppression
+            if (estUtilise)
+            {
+                return BadRequest($"Le vin avec Id '{id}' ne peut pas être supprimé car il est utilisé dans des ventes ou des commandes.");
+            }
+
             _context.Vins.Remove(vin);
             await _context.SaveChangesAsync();
 
