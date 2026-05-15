@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using CavisteApp.Api.Constants;
 using CavisteApp.Api.Data;
 using CavisteApp.Api.Entities;
 using CavisteApp.DTOs.Vins;
@@ -59,6 +61,7 @@ namespace CavisteApp.Api.Controllers
 
         // PUT: api/vins/5
         [HttpPut("{id}")]
+        [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
         public async Task<IActionResult> UpdateVinDto(int id, Vin vin)
         {
             if (id != vin.Id)
@@ -85,6 +88,7 @@ namespace CavisteApp.Api.Controllers
 
         // DELETE: api/vins/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
         public async Task<IActionResult> DeleteVinDto(int id)
         {
             var vin = await _context.Vins.FindAsync(id);
