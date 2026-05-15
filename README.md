@@ -10,7 +10,7 @@ Architecture **client/serveur** : API REST ASP.NET Core 9 + client lourd WPF.
 
 ## Documentation
 
-Avant de commencer, lire [`docs/caviste_doc.md`](docs/caviste_doc.md) qui couvre l'architecture et le workflow Git.
+Avant de commencer, lire [`.github/docs/caviste_doc.md`](.github/docs/caviste_doc.md) qui couvre l'architecture et le workflow Git.
 
 ---
 
