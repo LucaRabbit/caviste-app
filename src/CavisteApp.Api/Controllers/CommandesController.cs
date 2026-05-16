@@ -103,15 +103,24 @@ public class CommandesController : ControllerBase
             .Where(v => vinIds.Contains(v.Id))
             .ToDictionaryAsync(v => v.Id);
 
-        // TODO : Vérifier que les vins existent sinon : Créer le nouveau vin avant de créer la commande et incrémenter le stock du vin
-        // (Manque le dto du vin sur cette branche)
+        // Vérifier que les vins existent sinon : Créer le nouveau vin avant de créer la commande et incrémenter le stock du vin
+
         foreach (var ligne in request.Lignes)
         {
             if (!vins.TryGetValue(ligne.VinId, out var vin))
-                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
+                _context.Vins.Add(new Vin
+                {
+                    Id = ligne.VinId,
+                    Nom = $"Vin {ligne.VinId}",
+                    Type = TypeVin.Rouge,
+                    Prix = 0,
+                    Stock = 0,
+                    SeuilStockBas = 5,
+                    DateCreation = DateTime.UtcNow
+                });
         }
 
-        // Créer la vente
+        // Créer la commande
         var commande = new Commande
         {
             DateCreation = DateTime.UtcNow,
@@ -151,7 +160,7 @@ public class CommandesController : ControllerBase
             return BadRequest($"La commande avec Id '{id}' n'existe pas.");
         }
 
-        // Suppression de la vente
+        // Suppression de la commande
         _context.Commandes.Remove(commande);
 
         // Sauvegarde
