@@ -13,5 +13,5 @@ public class Fournisseur
 
 
     public ICollection<Vin> Vins { get; set; } = new List<Vin>();
-    public ICollection<CommandeFournisseur> Commandes { get; set; } = new List<CommandeFournisseur>();
+    public ICollection<Commande> Commandes { get; set; } = new List<Commande>();
 }

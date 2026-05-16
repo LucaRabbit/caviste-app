@@ -6,7 +6,7 @@ public class LigneCommande
     public int Quantite { get; set; }
 
     public int CommandeFournisseurId { get; set; }
-    public CommandeFournisseur CommandeFournisseur { get; set; } = null!;
+    public Commande CommandeFournisseur { get; set; } = null!;
 
     public int VinId { get; set; }
     public Vin Vin { get; set; } = null!;

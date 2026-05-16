@@ -2,7 +2,7 @@
 
 namespace CavisteApp.Api.Entities;
 
-public class CommandeFournisseur
+public class Commande
 {
     public int Id { get; set; }
     public DateTime DateCreation { get; set; } = DateTime.UtcNow;
