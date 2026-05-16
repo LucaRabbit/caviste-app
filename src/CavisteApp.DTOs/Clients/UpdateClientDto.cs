@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CavisteApp.DTOs.Clients
 {
-    public class UpdateVinDto
+    public class UpdateClientDto
     {
         [Required]
         [StringLength(100, ErrorMessage = "Le nom ne peut pas dépasser 100 caractères.")]
