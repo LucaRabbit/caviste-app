@@ -1,13 +1,16 @@
+using System.Net.Http.Headers;
 using System.Text;
+using CavisteApp.Api.Data;
+using CavisteApp.Api.Entities;
+using CavisteApp.Api.ExternalApi;
+using CavisteApp.Api.Middleware;
+using CavisteApp.Api.Services.Auth;
+using CavisteApp.Api.Services.WineApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using CavisteApp.Api.Data;
-using CavisteApp.Api.Entities;
-using CavisteApp.Api.Middleware;
-using CavisteApp.Api.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +108,19 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// Client HTTP pour l'API externe de vins
+builder.Services.AddHttpClient<IWineApiClient, WineApiClient>(c =>
+{
+    c.BaseAddress = new Uri("https://api.wineapi.io/");
+    c.DefaultRequestHeaders.Accept.Add(
+        new MediaTypeWithQualityHeaderValue("application/json"));
+    c.DefaultRequestHeaders.TryAddWithoutValidation(
+        "X-API-Key", builder.Configuration["WineApi:Key"]);
+    c.Timeout = TimeSpan.FromSeconds(15);
+});
+
+builder.Services.AddScoped<WineImportService>();
 
 var app = builder.Build();
 
