@@ -6,6 +6,7 @@ using CavisteApp.Api.Entities;
 using CavisteApp.DTOs.Ventes;
 using Microsoft.AspNetCore.Identity;
 using CavisteApp.Api.Constants;
+using CavisteApp.Api.Services.Stock;
 
 namespace CavisteApp.Api.Controllers;
 
@@ -16,11 +17,13 @@ public class VentesController : ControllerBase
 {
     private readonly CavisteDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly AlerteStockService _alerteStock;
 
-    public VentesController(CavisteDbContext context, UserManager<ApplicationUser> userManager)
+    public VentesController(CavisteDbContext context, UserManager<ApplicationUser> userManager, AlerteStockService alerteStock)
     {
         _context = context;
         _userManager = userManager;
+        _alerteStock = alerteStock;
     }
 
     // GET api/vins
@@ -114,7 +117,7 @@ public class VentesController : ControllerBase
                 return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
 
             if (vin.Stock < ligne.Quantite)
-                return BadRequest($"Stock insuffisant pour 'vin.Nom' (Stock disponible : {vin.Stock}).");
+                return BadRequest($"Stock insuffisant pour '{vin.Nom}' (Stock disponible : {vin.Stock}).");
         }
 
         // Créer la vente
@@ -131,10 +134,13 @@ public class VentesController : ControllerBase
             }).ToList()
         };
 
-        // Decrementer le stock des vins
+        // Capture + décrémentation dans une seule boucle
+        var stocksAvant = new Dictionary<int, int>();
         foreach (var ligne in request.Lignes)
         {
-            vins[ligne.VinId].Stock -= ligne.Quantite;
+            var vin = vins[ligne.VinId];
+            stocksAvant[vin.Id] = vin.Stock;
+            vin.Stock -= ligne.Quantite;
         }
 
         // Calculer le montant total de la vente
@@ -143,6 +149,12 @@ public class VentesController : ControllerBase
         // Enregistrer la vente
         _context.Ventes.Add(vente);
         await _context.SaveChangesAsync();
+
+        // Vérifier chaque vin modifié et envoyer une alerte si transition
+        foreach (var (vinId, stockAvant) in stocksAvant)
+        {
+            await _alerteStock.VerifierEtAlerterAsync(vins[vinId], stockAvant);
+        }
 
         // TODO: Recharger avec les relations pour retourner la vente complète
         await _context.Entry(vente).Reference(v => v.Client).LoadAsync();
