@@ -1,13 +1,16 @@
 using System.Text;
+using CavisteApp.Api.Configuration;
+using CavisteApp.Api.Data;
+using CavisteApp.Api.Entities;
+using CavisteApp.Api.Middleware;
+using CavisteApp.Api.Services.Auth;
+using CavisteApp.Api.Services.Email;
+using CavisteApp.Api.Services.Stock;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using CavisteApp.Api.Data;
-using CavisteApp.Api.Entities;
-using CavisteApp.Api.Middleware;
-using CavisteApp.Api.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +108,11 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// Services Mailtrap
+builder.Services.Configure<MailtrapOptions>(builder.Configuration.GetSection("Mailtrap"));
+builder.Services.AddScoped<IEmailService, MailtrapEmailService>();
+builder.Services.AddScoped<AlerteStockService>();
 
 var app = builder.Build();
 
