@@ -7,6 +7,7 @@ using CavisteApp.Api.Constants;
 using CavisteApp.Api.Data;
 using CavisteApp.Api.Entities;
 using CavisteApp.DTOs.Vins;
+using CavisteApp.Api.Dtos.Vins;
 
 namespace CavisteApp.Api.Controllers
 {
@@ -60,9 +61,10 @@ namespace CavisteApp.Api.Controllers
             {
                 Nom = request.Nom,
                 Type = (Enums.TypeVin)request.Type,
-                Stock = request.Stock,
+                Stock = request.StockInitial,
                 SeuilStockBas = request.SeuilStockBas,
-                Prix = request.Prix
+                Prix = request.Prix,
+                DateCreation = DateTime.UtcNow
             };
 
             _context.Vins.Add(vin);
@@ -83,7 +85,6 @@ namespace CavisteApp.Api.Controllers
                     Id = v.Id,
                     Nom = request.Nom,
                     Type = (Enums.TypeVin)request.Type,
-                    Stock = request.Stock,
                     SeuilStockBas = request.SeuilStockBas,
                     Prix = request.Prix
                 })
@@ -126,6 +127,66 @@ namespace CavisteApp.Api.Controllers
             return NoContent();
         }
 
+        // Post: api/vins/5/reception
+        [HttpPost("{id}/reception")]
+        [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
+        public async Task<IActionResult> ReceptionStock(int id, [FromBody] ReceptionStockDto request)
+        {
+            var vin = await _context.Vins.FindAsync(id);
+
+            if (vin == null)
+            {
+                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+            }
+
+            vin.Stock += request.Quantite;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(MapToDto(vin));
+        }
+
+        // POST: api/vins/5/retrait
+        [HttpPost("{id}/retrait")]
+        [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
+        public async Task<IActionResult> RetraitStock(int id, [FromBody] RetraitStockDto request)
+        {
+            var vin = await _context.Vins.FindAsync(id);
+
+            if (vin == null)
+            {
+                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+            }
+            if (request.Quantite > vin.Stock)
+            {
+                return BadRequest($"Le retrait de {request.Quantite} unités dépasse le stock actuel de {vin.Stock}.");
+            }
+
+            vin.Stock -= request.Quantite;
+
+            await _context.SaveChangesAsync();
+            return Ok(MapToDto(vin));
+        }
+
+        // POST: api/vins/5/inventaire
+        [HttpPost("{id}/inventaire")]
+        [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
+        public async Task<IActionResult> EnregistrerInventaire(int id, [FromBody] InventaireDto request)
+        {
+            var vin = await _context.Vins.FindAsync(id);
+
+            if (vin == null)
+            {
+                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+            }
+
+            vin.Stock = request.StockReel;
+
+            await _context.SaveChangesAsync();
+            return Ok(MapToDto(vin));
+        }
+
+        // Méthode de mapping pour convertir une entité Vin en VinDto
         private static VinDto MapToDto(Vin vin)
         {
             return new VinDto
@@ -136,7 +197,7 @@ namespace CavisteApp.Api.Controllers
                 Prix = vin.Prix,
                 Stock = vin.Stock,
                 SeuilStockBas = vin.SeuilStockBas,
-                CreatedDate = vin.DateCreation
+                CreatedDate = vin.DateCreation,
             };
         }
 
