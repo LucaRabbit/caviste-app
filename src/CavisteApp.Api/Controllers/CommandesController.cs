@@ -133,17 +133,11 @@ public class CommandesController : ControllerBase
             }).ToList()
         };
 
-        // Incrementer le stock des vins
-        foreach (var ligne in request.Lignes)
-        {
-            vins[ligne.VinId].Stock += ligne.Quantite;
-        }
-
         // Enregistrer la commande
         _context.Commandes.Add(commande);
         await _context.SaveChangesAsync();
 
-        // TODO: Recharger avec les relations pour retourner la vente complète
+        // Recharger avec les relations pour retourner la vente complète
         await _context.Entry(commande).Reference(c => c.Fournisseur).LoadAsync();
 
         return CreatedAtAction(nameof(GetById), new { id = commande.Id }, MapToDto(commande));
