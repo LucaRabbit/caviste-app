@@ -1,11 +1,12 @@
 using System.Net.Http.Headers;
 using System.Text;
+using CavisteApp.Api.Configuration;
 using CavisteApp.Api.Data;
 using CavisteApp.Api.Entities;
-using CavisteApp.Api.ExternalApi;
 using CavisteApp.Api.Middleware;
 using CavisteApp.Api.Services.Auth;
-using CavisteApp.Api.Services.WineApi;
+using CavisteApp.Api.Services.Email;
+using CavisteApp.Api.Services.Stock;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +109,11 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// Services Mailtrap
+builder.Services.Configure<MailtrapOptions>(builder.Configuration.GetSection("Mailtrap"));
+builder.Services.AddScoped<IEmailService, MailtrapEmailService>();
+builder.Services.AddScoped<AlerteStockService>();
 
 // Client HTTP pour l'API externe de vins
 builder.Services.AddHttpClient<IWineApiClient, WineApiClient>(c =>
