@@ -78,25 +78,20 @@ namespace CavisteApp.Api.Controllers
         [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
         public async Task<IActionResult> Update(int id, [FromBody] UpdateVinDto request)
         {
-            var vin = await _context.Vins
-                .Where(v => v.Id == id)
-                .Select(v => new Vin
-                {
-                    Id = v.Id,
-                    Nom = request.Nom,
-                    Type = (Enums.TypeVin)request.Type,
-                    SeuilStockBas = request.SeuilStockBas,
-                    Prix = request.Prix
-                })
-                .FirstOrDefaultAsync();
+            var vin = await _context.Vins.FindAsync(id);
 
             if (vin == null)
             {
                 return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
             }
-            
+
+            vin.Nom = request.Nom;
+            vin.Type = (Enums.TypeVin)request.Type;
+            vin.Prix = request.Prix;
+            vin.SeuilStockBas = request.SeuilStockBas;
+
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(MapToDto(vin));
         }
 
         // DELETE: api/vins/5
@@ -127,7 +122,7 @@ namespace CavisteApp.Api.Controllers
             return NoContent();
         }
 
-        // Post: api/vins/5/reception
+        // POST: api/vins/5/reception
         [HttpPost("{id}/reception")]
         [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
         public async Task<IActionResult> ReceptionStock(int id, [FromBody] ReceptionStockDto request)

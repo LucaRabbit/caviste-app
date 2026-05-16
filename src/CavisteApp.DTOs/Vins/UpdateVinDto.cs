@@ -8,6 +8,9 @@ namespace CavisteApp.DTOs.Vins
     public class UpdateVinDto
     {
         [Required]
+        public int Id { get; set; }
+
+        [Required]
         [StringLength(100, ErrorMessage = "Le nom du vin ne peut pas dépasser 100 caractères.")]
         public string Nom { get; set; } = string.Empty;
 
