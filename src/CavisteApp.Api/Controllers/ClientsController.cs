@@ -27,10 +27,10 @@ namespace CavisteApp.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll()
         {
-            var client = await _context.Clients
+            var clients = await _context.Clients
                 .ToListAsync();
 
-            return Ok(client);
+            return Ok(clients.Select(MapToDto));
         }
 
         [HttpGet("{id}")]
@@ -44,48 +44,53 @@ namespace CavisteApp.Api.Controllers
                 return BadRequest($"Le client avec Id '{id}' n'existe pas.");
             }
 
-            return Ok(client);
+            return Ok(MapToDto(client));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ClientDto>> CreateClientDto(Client client)
+        public async Task<ActionResult<ClientDto>> Create([FromBody] CreerClientDto request)
         {
+            var client = new Client
+            {
+                Nom = request.Nom,
+                Prenom = request.Prenom,
+                NomRue = request.NomRue,
+                NumRue = request.NumRue,
+                CodePostal = request.CodePostal,
+                Ville = request.Ville,
+                DateCreation = DateTime.UtcNow,
+                Email = request.Email,
+                Telephone = request.Telephone
+            };
+
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = client.Id }, client);
+            return CreatedAtAction(nameof(GetById), new { id = client.Id }, MapToDto(client));
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
-        public async Task<IActionResult> UpdateClientDto(int id, Client client
-            )
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateClientDto request)
         {
-            if (id != client.Id)
+            var client = await _context.Clients.FindAsync(id);
+
+            if (client == null)
             {
                 return BadRequest($"Le client avec Id '{id}' n'existe pas.");
             }
 
-            var existing = await _context.Clients.FindAsync(id);
-
-            if (existing == null)
-            {
-                return BadRequest("Aucun client trouvé.");
-            }
-
-            existing.Nom = client.Nom;
-            existing.Prenom = client.Prenom;
-            existing.NomRue = client.NomRue;
-            existing.NumRue = client.NumRue;
-            existing.Email = client.Email;
-            existing.Telephone = client.Telephone;
-            existing.CodePostal = client.CodePostal;
-            existing.Ville = client.Ville;
-            existing.DateCreation = client.DateCreation;
+            client.Nom = request.Nom;
+            client.Prenom = request.Prenom;
+            client.NomRue = request.NomRue;
+            client.NumRue = request.NumRue;
+            client.Email = request.Email;
+            client.Telephone = request.Telephone;
+            client.CodePostal = request.CodePostal;
+            client.Ville = request.Ville;
             
             await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(MapToDto(client));
         }
 
         [HttpDelete("{id}")]
@@ -105,7 +110,7 @@ namespace CavisteApp.Api.Controllers
             return NoContent();
         }
 
-        private static ClientDto MapToDto(ClientDto client)
+        private static ClientDto MapToDto(Client client)
         {
             return new ClientDto
             {
