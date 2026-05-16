@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text;
 using CavisteApp.Api.Configuration;
 using CavisteApp.Api.Data;
@@ -113,6 +114,19 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.Configure<MailtrapOptions>(builder.Configuration.GetSection("Mailtrap"));
 builder.Services.AddScoped<IEmailService, MailtrapEmailService>();
 builder.Services.AddScoped<AlerteStockService>();
+
+// Client HTTP pour l'API externe de vins
+builder.Services.AddHttpClient<IWineApiClient, WineApiClient>(c =>
+{
+    c.BaseAddress = new Uri("https://api.wineapi.io/");
+    c.DefaultRequestHeaders.Accept.Add(
+        new MediaTypeWithQualityHeaderValue("application/json"));
+    c.DefaultRequestHeaders.TryAddWithoutValidation(
+        "X-API-Key", builder.Configuration["WineApi:Key"]);
+    c.Timeout = TimeSpan.FromSeconds(15);
+});
+
+builder.Services.AddScoped<WineImportService>();
 
 var app = builder.Build();
 
