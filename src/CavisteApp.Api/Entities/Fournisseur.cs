@@ -11,5 +11,5 @@ public class Fournisseur
     public string CodePostal { get; set; } = string.Empty;
     public string Ville { get; set; } = string.Empty;
 
-    public ICollection<CommandeFournisseur> Commandes { get; set; } = new List<CommandeFournisseur>();
+    public ICollection<Commande> Commandes { get; set; } = new List<Commande>();
 }

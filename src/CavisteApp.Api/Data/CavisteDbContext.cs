@@ -10,7 +10,7 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
     public DbSet<Vin> Vins => Set<Vin>();
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<Fournisseur> Fournisseurs => Set<Fournisseur>();
-    public DbSet<CommandeFournisseur> CommandesFournisseur => Set<CommandeFournisseur>();
+    public DbSet<Commande> Commandes => Set<Commande>();
     public DbSet<LigneCommande> LignesCommande => Set<LigneCommande>();
     public DbSet<Vente> Ventes => Set<Vente>();
     public DbSet<LigneVente> LignesVente => Set<LigneVente>();
@@ -102,7 +102,7 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
         });
 
         // CommandeFournisseur
-        modelBuilder.Entity<CommandeFournisseur>(entity =>
+        modelBuilder.Entity<Commande>(entity =>
         {
             entity.HasKey(c => c.Id);
             
