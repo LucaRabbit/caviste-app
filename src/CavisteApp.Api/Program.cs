@@ -7,6 +7,7 @@ using CavisteApp.Api.Middleware;
 using CavisteApp.Api.Services.Auth;
 using CavisteApp.Api.Services.Email;
 using CavisteApp.Api.Services.Stock;
+using CavisteApp.Api.Services.WineApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
