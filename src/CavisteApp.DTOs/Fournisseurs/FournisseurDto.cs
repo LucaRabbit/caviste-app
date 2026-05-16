@@ -1,6 +1,10 @@
-﻿namespace CavisteApp.Api.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-public class Fournisseur
+namespace CavisteApp.DTOs.Fournisseurs;
+
+public class FournisseurDto
 {
     public int Id { get; set; }
     public string Nom { get; set; } = string.Empty;
@@ -10,6 +14,4 @@ public class Fournisseur
     public string NomRue { get; set; } = string.Empty;
     public string CodePostal { get; set; } = string.Empty;
     public string Ville { get; set; } = string.Empty;
-
-    public ICollection<Commande> Commandes { get; set; } = new List<Commande>();
 }
