@@ -26,10 +26,20 @@ public class CommandesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CommandeResumeDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<CommandeResumeDto>>> GetAll([FromQuery] StatutCommande? statut = null, [FromQuery] int? fournisseurId = null)
     {
-        var commandes = await _context.Commandes
+        var query = _context.Commandes
             .Include(c => c.Fournisseur)
+            .Include(c => c.Lignes)
+            .AsQueryable();
+
+        if (statut.HasValue)
+            query = query.Where(c => c.Statut == statut.Value);
+
+        if (fournisseurId.HasValue)
+            query = query.Where(c => c.FournisseurId == fournisseurId.Value);
+
+        var commandes = await query
             .OrderByDescending(c => c.DateCreation)
             .Select(c => new CommandeResumeDto
             {
