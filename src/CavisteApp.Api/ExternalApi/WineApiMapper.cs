@@ -1,6 +1,6 @@
 ﻿using CavisteApp.Api.Entities;
-using CavisteApp.Api.Enums;
 using CavisteApp.Api.ExternalApi;
+using CavisteApp.DTOs.Enums;
 
 public static class VinMapper
 {

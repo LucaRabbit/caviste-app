@@ -265,13 +265,9 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantite")
-<<<<<<< feature/Vin_Client_CRUD
-                        .HasColumnType("int");
-=======
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(1);
->>>>>>> dev
 
                     b.Property<int>("VenteId")
                         .HasColumnType("int");
@@ -279,14 +275,6 @@ namespace CavisteApp.Api.Migrations
                     b.Property<int>("VinId")
                         .HasColumnType("int");
 
-<<<<<<< feature/Vin_Client_CRUD
-                    b.HasKey("Id");
-
-                    b.HasIndex("VenteId");
-
-                    b.HasIndex("VinId");
-
-=======
                     b.Property<string>("VinNom")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -299,7 +287,6 @@ namespace CavisteApp.Api.Migrations
                     b.HasIndex("VenteId", "VinId")
                         .IsUnique();
 
->>>>>>> dev
                     b.ToTable("LignesVente");
                 });
 
@@ -315,16 +302,11 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
-<<<<<<< feature/Vin_Client_CRUD
-                        .HasColumnType("datetime(6)");
-
-=======
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("Date"));
 
->>>>>>> dev
                     b.Property<decimal>("MontantTotal")
                         .HasColumnType("decimal(18,2)");
 
@@ -351,9 +333,6 @@ namespace CavisteApp.Api.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("FournisseurId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nom")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -372,8 +351,6 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FournisseurId");
 
                     b.ToTable("Vins");
                 });
@@ -578,16 +555,6 @@ namespace CavisteApp.Api.Migrations
                     b.Navigation("Utilisateur");
                 });
 
-            modelBuilder.Entity("CavisteApp.Api.Entities.Vin", b =>
-                {
-                    b.HasOne("CavisteApp.Api.Entities.Fournisseur", "Fournisseur")
-                        .WithMany("Vins")
-                        .HasForeignKey("FournisseurId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Fournisseur");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -652,8 +619,6 @@ namespace CavisteApp.Api.Migrations
             modelBuilder.Entity("CavisteApp.Api.Entities.Fournisseur", b =>
                 {
                     b.Navigation("Commandes");
-
-                    b.Navigation("Vins");
                 });
 
             modelBuilder.Entity("CavisteApp.Api.Entities.Vente", b =>

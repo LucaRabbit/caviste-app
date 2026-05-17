@@ -126,6 +126,26 @@ namespace CavisteApp.Api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Vins",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nom = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: false),
+                    SeuilStockBas = table.Column<int>(type: "int", nullable: false),
+                    DateCreation = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vins", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -301,29 +321,33 @@ namespace CavisteApp.Api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Vins",
+                name: "LignesVente",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nom = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    VinNom = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false),
-                    SeuilStockBas = table.Column<int>(type: "int", nullable: false),
-                    DateCreation = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    FournisseurId = table.Column<int>(type: "int", nullable: true)
+                    Quantite = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    PrixUnitaire = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    VenteId = table.Column<int>(type: "int", nullable: false),
+                    VinId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vins", x => x.Id);
+                    table.PrimaryKey("PK_LignesVente", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vins_Fournisseurs_FournisseurId",
-                        column: x => x.FournisseurId,
-                        principalTable: "Fournisseurs",
+                        name: "FK_LignesVente_Ventes_VenteId",
+                        column: x => x.VenteId,
+                        principalTable: "Ventes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LignesVente_Vins_VinId",
+                        column: x => x.VinId,
+                        principalTable: "Vins",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -348,37 +372,6 @@ namespace CavisteApp.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LignesCommande_Vins_VinId",
-                        column: x => x.VinId,
-                        principalTable: "Vins",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "LignesVente",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    VinNom = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Quantite = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    PrixUnitaire = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    VenteId = table.Column<int>(type: "int", nullable: false),
-                    VinId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LignesVente", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LignesVente_Ventes_VenteId",
-                        column: x => x.VenteId,
-                        principalTable: "Ventes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_LignesVente_Vins_VinId",
                         column: x => x.VinId,
                         principalTable: "Vins",
                         principalColumn: "Id",
@@ -464,11 +457,6 @@ namespace CavisteApp.Api.Migrations
                 name: "IX_Ventes_UtilisateurId",
                 table: "Ventes",
                 column: "UtilisateurId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vins_FournisseurId",
-                table: "Vins",
-                column: "FournisseurId");
         }
 
         /// <inheritdoc />
@@ -508,13 +496,13 @@ namespace CavisteApp.Api.Migrations
                 name: "Vins");
 
             migrationBuilder.DropTable(
+                name: "Fournisseurs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Clients");
-
-            migrationBuilder.DropTable(
-                name: "Fournisseurs");
         }
     }
 }

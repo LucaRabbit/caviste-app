@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CavisteApp.Api.Migrations
 {
     [DbContext(typeof(CavisteDbContext))]
-    [Migration("20260515133656_InitialCreate")]
+    [Migration("20260515184554_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -336,9 +336,6 @@ namespace CavisteApp.Api.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("FournisseurId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nom")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -357,8 +354,6 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FournisseurId");
 
                     b.ToTable("Vins");
                 });
@@ -563,16 +558,6 @@ namespace CavisteApp.Api.Migrations
                     b.Navigation("Utilisateur");
                 });
 
-            modelBuilder.Entity("CavisteApp.Api.Entities.Vin", b =>
-                {
-                    b.HasOne("CavisteApp.Api.Entities.Fournisseur", "Fournisseur")
-                        .WithMany("Vins")
-                        .HasForeignKey("FournisseurId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Fournisseur");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -637,8 +622,6 @@ namespace CavisteApp.Api.Migrations
             modelBuilder.Entity("CavisteApp.Api.Entities.Fournisseur", b =>
                 {
                     b.Navigation("Commandes");
-
-                    b.Navigation("Vins");
                 });
 
             modelBuilder.Entity("CavisteApp.Api.Entities.Vente", b =>
