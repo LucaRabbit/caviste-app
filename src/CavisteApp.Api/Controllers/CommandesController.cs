@@ -26,7 +26,9 @@ public class CommandesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CommandeResumeDto>>> GetAll([FromQuery] StatutCommande? statut = null, [FromQuery] int? fournisseurId = null)
+    public async Task<ActionResult<IEnumerable<CommandeResumeDto>>> GetAll(
+        [FromQuery] StatutCommande? statut = null, 
+        [FromQuery] int? fournisseurId = null)
     {
         var query = _context.Commandes
             .Include(c => c.Fournisseur)
@@ -76,7 +78,7 @@ public class CommandesController : ControllerBase
                 {
                     Id = l.Id,
                     VinId = l.VinId,
-                    VinNom = l.Vin.Nom,
+                    VinNom = l.VinNom,
                     Quantite = l.Quantite,
                 }).ToList()
             })

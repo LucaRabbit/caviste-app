@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using CavisteApp.Api.Constants;
+﻿using CavisteApp.Api.Constants;
 using CavisteApp.Api.Data;
-using CavisteApp.Api.Entities;
-using CavisteApp.DTOs.Vins;
 using CavisteApp.Api.Dtos.Vins;
+using CavisteApp.Api.Entities;
 using CavisteApp.DTOs.Enums;
+using CavisteApp.DTOs.Vins;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CavisteApp.Api.Controllers
 {
@@ -28,13 +26,25 @@ namespace CavisteApp.Api.Controllers
 
         // GET: api/
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VinDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<VinDto>>> GetAll(
+            [FromQuery] string? nom = null,
+            [FromQuery] TypeVin? type = null,
+            [FromQuery] bool? stockBas = null)
         {
-            var vins =  await _context.Vins
-                .AsNoTracking()
-                .OrderBy(v => v.Id)
-                .ToListAsync();
+            var query = _context.Vins.
+                AsNoTracking().
+                AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(nom))
+                query = query.Where(v => v.Nom.Contains(nom));
+
+            if (type.HasValue)
+                query = query.Where(v => v.Type == type.Value);
+
+            if (stockBas == true)
+                query = query.Where(v => v.Stock <= v.SeuilStockBas);
+
+            var vins = await query.OrderBy(v => v.Nom).ToListAsync();
             return Ok(vins.Select(MapToDto));
         }
 

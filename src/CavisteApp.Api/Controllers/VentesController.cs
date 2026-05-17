@@ -30,7 +30,9 @@ public class VentesController : ControllerBase
 
     // GET api/vins
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<VenteResumeDto>>> GetAll([FromQuery] StatutVente? statut = null, [FromQuery] int? clientId = null)
+    public async Task<ActionResult<IEnumerable<VenteResumeDto>>> GetAll(
+        [FromQuery] StatutVente? statut = null,
+        [FromQuery] int? clientId = null)
     {
         var query = _context.Ventes
             .Include(v => v.Client)
