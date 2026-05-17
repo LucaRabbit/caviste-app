@@ -13,7 +13,6 @@ public class LigneCommande
     // Snapshot des données du vin au moment de la création de la ligne de commande
     public string VinNom { get; set; } = string.Empty;
     public TypeVin VinType {  get; set; }
-    public decimal PrixUnitaire { get; set; }
 
     public int Quantite { get; set; }
     public int? QuantiteRecue { get; set; }

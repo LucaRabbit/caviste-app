@@ -275,6 +275,12 @@ namespace CavisteApp.Api.Migrations
                     Date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     MontantTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Statut = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DateValidation = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DateAnnulation = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    MotifAnnulation = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ClientId = table.Column<int>(type: "int", nullable: false),
                     UtilisateurId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -297,22 +303,26 @@ namespace CavisteApp.Api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CommandesFournisseur",
+                name: "Commandes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Statut = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     DateCreation = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DateValidation = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     DateReception = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Statut = table.Column<int>(type: "int", nullable: false),
+                    DateAnnulation = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    MotifAnnulation = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     FournisseurId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CommandesFournisseur", x => x.Id);
+                    table.PrimaryKey("PK_Commandes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CommandesFournisseur_Fournisseurs_FournisseurId",
+                        name: "FK_Commandes_Fournisseurs_FournisseurId",
                         column: x => x.FournisseurId,
                         principalTable: "Fournisseurs",
                         principalColumn: "Id",
@@ -327,6 +337,8 @@ namespace CavisteApp.Api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     VinNom = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Type = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Quantite = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     PrixUnitaire = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -357,17 +369,22 @@ namespace CavisteApp.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    VinId = table.Column<int>(type: "int", nullable: false),
+                    VinNom = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    VinType = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Quantite = table.Column<int>(type: "int", nullable: false),
-                    CommandeFournisseurId = table.Column<int>(type: "int", nullable: false),
-                    VinId = table.Column<int>(type: "int", nullable: false)
+                    QuantiteRecue = table.Column<int>(type: "int", nullable: true),
+                    CommandeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LignesCommande", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LignesCommande_CommandesFournisseur_CommandeFournisseurId",
-                        column: x => x.CommandeFournisseurId,
-                        principalTable: "CommandesFournisseur",
+                        name: "FK_LignesCommande_Commandes_CommandeId",
+                        column: x => x.CommandeId,
+                        principalTable: "Commandes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -423,14 +440,24 @@ namespace CavisteApp.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommandesFournisseur_FournisseurId",
-                table: "CommandesFournisseur",
+                name: "IX_Commandes_DateCreation",
+                table: "Commandes",
+                column: "DateCreation");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Commandes_FournisseurId",
+                table: "Commandes",
                 column: "FournisseurId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LignesCommande_CommandeFournisseurId",
+                name: "IX_Commandes_Statut",
+                table: "Commandes",
+                column: "Statut");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LignesCommande_CommandeId",
                 table: "LignesCommande",
-                column: "CommandeFournisseurId");
+                column: "CommandeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LignesCommande_VinId",
@@ -438,10 +465,9 @@ namespace CavisteApp.Api.Migrations
                 column: "VinId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LignesVente_VenteId_VinId",
+                name: "IX_LignesVente_VenteId",
                 table: "LignesVente",
-                columns: new[] { "VenteId", "VinId" },
-                unique: true);
+                column: "VenteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LignesVente_VinId",
@@ -452,6 +478,16 @@ namespace CavisteApp.Api.Migrations
                 name: "IX_Ventes_ClientId",
                 table: "Ventes",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ventes_Date",
+                table: "Ventes",
+                column: "Date");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ventes_Statut",
+                table: "Ventes",
+                column: "Statut");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ventes_UtilisateurId",
@@ -487,7 +523,7 @@ namespace CavisteApp.Api.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CommandesFournisseur");
+                name: "Commandes");
 
             migrationBuilder.DropTable(
                 name: "Ventes");

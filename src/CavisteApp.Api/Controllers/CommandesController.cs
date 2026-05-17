@@ -198,7 +198,6 @@ public class CommandesController : ControllerBase
                 ligneExistante.VinNom = vin.Nom;
                 ligneExistante.VinType = vin.Type;
                 ligneExistante.Quantite = ligneDto.Quantite;
-                ligneExistante.PrixUnitaire = ligneDto.PrixUnitaire;
             }
             else
             {
@@ -209,7 +208,6 @@ public class CommandesController : ControllerBase
                     VinNom = vin.Nom,
                     VinType = vin.Type,
                     Quantite = ligneDto.Quantite,
-                    PrixUnitaire = ligneDto.PrixUnitaire
                 });
             }
         }
@@ -286,6 +284,7 @@ public class CommandesController : ControllerBase
         var commande = await _context.Commandes
             .Include(c => c.Fournisseur)
             .Include(c => c.Lignes)
+            .ThenInclude(l => l.Vin)
             .FirstOrDefaultAsync(c => c.Id == id);
         if (commande == null)
         {
@@ -395,7 +394,6 @@ public class CommandesController : ControllerBase
                 VinNom = l.VinNom,
                 Quantite = l.Quantite,
                 QuantiteRecue = l.QuantiteRecue,
-                PrixUnitaire = l.PrixUnitaire
             }).ToList()
         };
     }
