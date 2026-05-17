@@ -21,6 +21,8 @@ public class Vin
     [Required]
     public DateTime DateCreation { get; set; } = DateTime.UtcNow;
 
+    public string? SourceExterneId { get; set; } // pour idempotence lors d'import depuis API externe
+
     [JsonIgnore]
     public ICollection<LigneVente> LignesVente { get; set; } = new List<LigneVente>();
     [JsonIgnore]

@@ -137,7 +137,9 @@ namespace CavisteApp.Api.Migrations
                     Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false),
                     SeuilStockBas = table.Column<int>(type: "int", nullable: false),
-                    DateCreation = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    DateCreation = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    SourceExterneId = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -493,6 +495,12 @@ namespace CavisteApp.Api.Migrations
                 name: "IX_Ventes_UtilisateurId",
                 table: "Ventes",
                 column: "UtilisateurId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vins_SourceExterneId",
+                table: "Vins",
+                column: "SourceExterneId",
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -392,6 +392,10 @@ namespace CavisteApp.Api.Migrations
                     b.Property<int>("SeuilStockBas")
                         .HasColumnType("int");
 
+                    b.Property<string>("SourceExterneId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -399,6 +403,9 @@ namespace CavisteApp.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SourceExterneId")
+                        .IsUnique();
 
                     b.ToTable("Vins");
                 });

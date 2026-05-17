@@ -16,7 +16,8 @@ public static class VinMapper
             // Champs métier — valeurs par défaut, à ajuster côté WPF
             Stock = 0,
             SeuilStockBas = 5,
-            DateCreation = DateTime.UtcNow
+            DateCreation = DateTime.UtcNow,
+            SourceExterneId = src.Id
         };
     }
 

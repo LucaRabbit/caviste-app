@@ -28,6 +28,12 @@ public class CavisteDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
 
             entity.Property(v => v.Nom).IsRequired().HasMaxLength(100);
             entity.Property(v => v.Prix).HasColumnType("decimal(18,2)");
+
+            // SourceExterneId : optionnel
+            entity.Property(v => v.SourceExterneId).HasMaxLength(100);
+
+            entity.HasIndex(v => v.SourceExterneId)
+                  .IsUnique();
         });
 
         // Client
