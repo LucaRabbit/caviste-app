@@ -1,14 +1,16 @@
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using CavisteApp.Api.Configuration;
 using CavisteApp.Api.Data;
 using CavisteApp.Api.Entities;
+using CavisteApp.Api.ExternalApi;
 using CavisteApp.Api.Middleware;
 using CavisteApp.Api.Services.Auth;
 using CavisteApp.Api.Services.Email;
 using CavisteApp.Api.Services.Stock;
 using CavisteApp.Api.Services.WineApi;
-using CavisteApp.Api.ExternalApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -77,14 +79,12 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
-// Controllers + Swagger
+// Controllers
 builder.Services.AddControllers()
     // Configurer les options JSON pour sérialiser les enums en chaînes de caractères
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(
-            new System.Text.Json.Serialization.JsonStringEnumConverter());
-    });
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
