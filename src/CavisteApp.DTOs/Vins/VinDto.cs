@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using CavisteApp.DTOs.Enums;
 
 namespace CavisteApp.DTOs.Vins
 {
@@ -13,6 +14,6 @@ namespace CavisteApp.DTOs.Vins
         public decimal Prix { get; set; }
         public int Stock { get; set; }
         public int SeuilStockBas { get; set; }
-        public int Type { get; set; }
+        public TypeVin Type { get; set; }
     }
 }
