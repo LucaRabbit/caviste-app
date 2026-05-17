@@ -56,11 +56,21 @@ public partial class App : Application
             client.BaseAddress = new Uri(apiBaseUrl);
         });
 
+        // Client pour les opérations sur les vins, avec injection automatique du token JWT via AuthHttpHandler
+        services.AddHttpClient<IVinsApiClient, VinsApiClient>(c =>
+        {
+            c.BaseAddress = new Uri(apiBaseUrl);
+        })
+        .AddHttpMessageHandler<AuthHttpHandler>();   // ← injection auto du token JWT
+
         // ViewModels
         services.AddTransient<LoginViewModel>();
+        services.AddTransient<VinsViewModel>();
+        services.AddTransient<MainViewModel>();
 
         // Vues
         services.AddTransient<LoginWindow>();
         services.AddTransient<MainWindow>();
+        services.AddTransient<VinsView>();
     }
 }
