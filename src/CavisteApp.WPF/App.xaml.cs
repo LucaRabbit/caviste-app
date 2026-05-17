@@ -63,12 +63,12 @@ public partial class App : Application
         })
         .AddHttpMessageHandler<AuthHttpHandler>();   // ← injection auto du token JWT
 
-        // ViewModels
+        // ViewModels (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginViewModel>();
         services.AddTransient<VinsViewModel>();
         services.AddTransient<MainViewModel>();
 
-        // Vues
+        // Vues (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginWindow>();
         services.AddTransient<MainWindow>();
         services.AddTransient<VinsView>();
