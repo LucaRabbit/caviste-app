@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CavisteApp.Api.Dtos.Vins;
+namespace CavisteApp.DTOs.Vins;
 
 // DTO pour retirer du stock pour un motif autre qu'une vente (casse, perte, etc.)
 public class RetraitStockDto

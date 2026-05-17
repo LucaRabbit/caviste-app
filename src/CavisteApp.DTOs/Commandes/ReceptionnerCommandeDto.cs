@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CavisteApp.Api.Dtos.Commandes;
+namespace CavisteApp.DTOs.Commandes;
 
 public class ReceptionnerCommandeDto
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CavisteApp.Api.Dtos.Vins;
+namespace CavisteApp.DTOs.Vins;
 
 // DTO pour corriger le stock à une valeur réelle constatée lors d'un inventaire
 public class InventaireDto

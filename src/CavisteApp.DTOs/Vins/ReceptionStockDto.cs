@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CavisteApp.Api.Dtos.Vins;
+namespace CavisteApp.DTOs.Vins;
 
 // DTO pour réceptionner du stock (livraison fournisseur, retour client, etc.)
 public class ReceptionStockDto
