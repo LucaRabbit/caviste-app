@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CavisteApp.DTOs.Enums;
 
 namespace CavisteApp.DTOs.Commandes
 {
@@ -10,7 +11,7 @@ namespace CavisteApp.DTOs.Commandes
         public DateTime DateCreation { get; set; }
         public DateTime? DateValidation { get; set; }
         public DateTime? DateReception { get; set; }
-        public int Statut { get; set; } = 0;
+        public StatutCommande Statut { get; set; } = 0;
         public string FournisseurNom { get; set; } = null!;
 
         public int NombreLignes { get; set; }

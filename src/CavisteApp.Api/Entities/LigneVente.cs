@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using CavisteApp.DTOs.Enums;
 
 namespace CavisteApp.Api.Entities;
 
@@ -8,6 +9,7 @@ public class LigneVente
 
     // Snapshot du nom du vin au moment de la vente (pour éviter les problèmes si changement dans la base de données)
     public string VinNom { get; set; } = string.Empty;
+    public TypeVin Type { get; set; }
     public int Quantite { get; set; }
     public decimal PrixUnitaire { get; set; }
 

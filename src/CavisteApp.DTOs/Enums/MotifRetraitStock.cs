@@ -1,4 +1,4 @@
-﻿namespace CavisteApp.Api.Enums;
+﻿namespace CavisteApp.DTOs.Enums;
 
 public enum MotifRetraitStock
 {

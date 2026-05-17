@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CavisteApp.DTOs.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace CavisteApp.DTOs.Vins
@@ -15,8 +16,7 @@ namespace CavisteApp.DTOs.Vins
         public string Nom { get; set; } = string.Empty;
 
         [Required]
-        [Range(0, 4, ErrorMessage = "Le type doit être compris entre 0 et 4")]
-        public int Type { get; set; }
+        public TypeVin Type { get; set; }
 
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Le prix doit être supérieur à zéro.")]

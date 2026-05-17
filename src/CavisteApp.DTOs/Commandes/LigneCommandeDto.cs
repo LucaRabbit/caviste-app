@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-
-namespace CavisteApp.DTOs.Commandes
+﻿namespace CavisteApp.DTOs.Commandes
 {
     public class LigneCommandeDto
     {
-        [Required]
         public int Id { get; set; }
-        [Required]
-        public int Quantite { get; set; }
-        [Required]
         public int VinId { get; set; }
-        [Required]
-        [StringLength(100,ErrorMessage = "Le nom du vin ne peut pas dépasser 100 caractères.")]
+
+        // Snapshot des données du vin au moment de la création de la ligne de commande
         public string VinNom { get; set; } = string.Empty;
+
+        public int Quantite { get; set; } // Quantité commandée
+        public int? QuantiteRecue { get; set; } // Quantité réellement reçue (peut être différente de la quantité commandée)
     }
 }

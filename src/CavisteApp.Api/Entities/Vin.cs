@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using CavisteApp.Api.Enums;
 using System.ComponentModel.DataAnnotations;
+using CavisteApp.DTOs.Enums;
 
 namespace CavisteApp.Api.Entities;
 
