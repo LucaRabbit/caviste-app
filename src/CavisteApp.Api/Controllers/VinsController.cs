@@ -8,6 +8,7 @@ using CavisteApp.Api.Data;
 using CavisteApp.Api.Entities;
 using CavisteApp.DTOs.Vins;
 using CavisteApp.Api.Dtos.Vins;
+using CavisteApp.DTOs.Enums;
 
 namespace CavisteApp.Api.Controllers
 {
@@ -60,7 +61,7 @@ namespace CavisteApp.Api.Controllers
             var vin = new Vin
             {
                 Nom = request.Nom,
-                Type = (Enums.TypeVin)request.Type,
+                Type = request.Type,
                 Stock = request.StockInitial,
                 SeuilStockBas = request.SeuilStockBas,
                 Prix = request.Prix,
@@ -86,7 +87,7 @@ namespace CavisteApp.Api.Controllers
             }
 
             vin.Nom = request.Nom;
-            vin.Type = (Enums.TypeVin)request.Type;
+            vin.Type = (TypeVin)request.Type;
             vin.Prix = request.Prix;
             vin.SeuilStockBas = request.SeuilStockBas;
 
@@ -188,7 +189,7 @@ namespace CavisteApp.Api.Controllers
             {
                 Id = vin.Id,
                 Nom = vin.Nom,
-                Type = (int)vin.Type,
+                Type = vin.Type,
                 Prix = vin.Prix,
                 Stock = vin.Stock,
                 SeuilStockBas = vin.SeuilStockBas,

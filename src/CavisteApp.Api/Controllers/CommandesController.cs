@@ -1,8 +1,9 @@
 ﻿using CavisteApp.Api.Constants;
 using CavisteApp.Api.Data;
+using CavisteApp.Api.Dtos.Commandes;
 using CavisteApp.Api.Entities;
-using CavisteApp.Api.Enums;
 using CavisteApp.DTOs.Commandes;
+using CavisteApp.DTOs.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -37,15 +38,10 @@ public class CommandesController : ControllerBase
                 DateReception = c.DateReception,
                 DateValidation = c.DateValidation,
                 FournisseurNom = c.Fournisseur.Nom,
-                Statut = (int)c.Statut,
+                Statut = c.Statut,
                 NombreLignes = c.Lignes.Count
             })
             .ToListAsync();
-
-        if (commandes == null || commandes.Count == 0)
-        {
-            return BadRequest("Aucune commande trouvée.");
-        }
 
         return Ok(commandes);
     }
@@ -63,7 +59,7 @@ public class CommandesController : ControllerBase
                 DateCreation = c.DateCreation,
                 DateValidation = c.DateValidation,
                 DateReception = c.DateReception,
-                Statut = (int)c.Statut,
+                Statut = c.Statut,
                 FournisseurNom = c.Fournisseur.Nom,
                 FournisseurId = c.Fournisseur.Id,
                 Lignes = c.Lignes.Select(l => new LigneCommandeDto
@@ -103,21 +99,11 @@ public class CommandesController : ControllerBase
             .Where(v => vinIds.Contains(v.Id))
             .ToDictionaryAsync(v => v.Id);
 
-        // Vérifier que les vins existent sinon : Créer le nouveau vin avant de créer la commande et incrémenter le stock du vin
-
+        // Vérifier que les vins des lignes existent
         foreach (var ligne in request.Lignes)
         {
             if (!vins.TryGetValue(ligne.VinId, out var vin))
-                _context.Vins.Add(new Vin
-                {
-                    Id = ligne.VinId,
-                    Nom = $"Vin {ligne.VinId}",
-                    Type = TypeVin.Rouge,
-                    Prix = 0,
-                    Stock = 0,
-                    SeuilStockBas = 5,
-                    DateCreation = DateTime.UtcNow
-                });
+                return BadRequest($"Le vin avec Id {ligne.VinId} n'existe pas.");
         }
 
         // Créer la commande
@@ -143,15 +129,111 @@ public class CommandesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = commande.Id }, MapToDto(commande));
     }
 
+    // PUT: api/commandes/5 - seulement si brouillon
+    [HttpPut("{id:int}")]
+    [Authorize(Roles = RolesConstants.Administrateur)]
+    public async Task<ActionResult<CommandeDto>> Update(int id, [FromBody] UpdateCommandeDto request)
+    {
+        var commande = await _context.Commandes
+            .Include(c => c.Fournisseur)
+            .Include(c => c.Lignes)
+            .FirstOrDefaultAsync(c => c.Id == id);
 
+        if (commande is null)
+            return NotFound($"La commande {id} n'existe pas.");
+
+        // Règle métier : seules les commandes en brouillon sont modifiables
+        if (commande.Statut != StatutCommande.Brouillon)
+            return Conflict(
+                $"Seules les commandes en brouillon peuvent être modifiées (statut actuel : {commande.Statut}). " +
+                "Annulez cette commande et créez-en une nouvelle si nécessaire.");
+
+        // Vérifier que le fournisseur existe
+        var fournisseurExiste = await _context.Fournisseurs.AnyAsync(f => f.Id == request.FournisseurId);
+        if (!fournisseurExiste)
+            return BadRequest($"Le fournisseur {request.FournisseurId} n'existe pas.");
+
+        // Vérifier que les vins existent
+        var vinIds = request.Lignes.Select(l => l.VinId).Distinct().ToList();
+        var vins = await _context.Vins
+            .Where(v => vinIds.Contains(v.Id))
+            .ToDictionaryAsync(v => v.Id);
+
+        foreach (var ligne in request.Lignes)
+        {
+            if (!vins.ContainsKey(ligne.VinId))
+                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
+        }
+
+        // Mise à jour des champs simples
+        commande.FournisseurId = request.FournisseurId;
+
+        // Réconciliation des lignes : identifier les lignes à supprimer, modifier, ajouter
+        var idsLignesEnvoyees = request.Lignes
+            .Where(l => l.Id.HasValue)
+            .Select(l => l.Id!.Value)
+            .ToHashSet();
+
+        // Supprimer les lignes qui ne sont plus présentes
+        var lignesASupprimer = commande.Lignes
+            .Where(l => !idsLignesEnvoyees.Contains(l.Id))
+            .ToList();
+
+        foreach (var ligne in lignesASupprimer)
+            commande.Lignes.Remove(ligne);
+
+        // Modifier les lignes existantes et ajouter les nouvelles
+        foreach (var ligneDto in request.Lignes)
+        {
+            var vin = vins[ligneDto.VinId];
+
+            if (ligneDto.Id.HasValue)
+            {
+                // Modification d'une ligne existante
+                var ligneExistante = commande.Lignes.FirstOrDefault(l => l.Id == ligneDto.Id.Value);
+                if (ligneExistante is null)
+                    return BadRequest($"La ligne {ligneDto.Id} n'appartient pas à cette commande.");
+
+                ligneExistante.VinId = ligneDto.VinId;
+                ligneExistante.VinNom = vin.Nom;
+                ligneExistante.VinType = vin.Type;
+                ligneExistante.Quantite = ligneDto.Quantite;
+                ligneExistante.PrixUnitaire = ligneDto.PrixUnitaire;
+            }
+            else
+            {
+                // Nouvelle ligne
+                commande.Lignes.Add(new LigneCommande
+                {
+                    VinId = ligneDto.VinId,
+                    VinNom = vin.Nom,
+                    VinType = vin.Type,
+                    Quantite = ligneDto.Quantite,
+                    PrixUnitaire = ligneDto.PrixUnitaire
+                });
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(MapToDto(commande));
+    }
+
+    // DELETE: api/commandes/5 - seulement si brouillon
     [HttpDelete("{id:int}")]
-    [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
     public async Task<IActionResult> DeleteCommande(int id)
     {
         var commande = await _context.Commandes.FindAsync(id);
         if (commande == null)
         {
             return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+        }
+
+        if (commande.Statut != StatutCommande.Brouillon)
+        {
+            return BadRequest(
+                $"Seules les commandes au statut 'Brouillon' peuvent être supprimées (statut actuel : {commande.Statut})." +
+                "Utiliser l'annulation pour les commandes en cours.");
         }
 
         // Suppression de la commande
@@ -162,6 +244,139 @@ public class CommandesController : ControllerBase
         return NoContent();
     }
 
+    // POST api/commandes/{id}/valider
+    [HttpPost("{id:int}/valider")]
+    [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
+    public async Task<ActionResult<CommandeDto>> Valider(int id)
+    {
+        var commande = await _context.Commandes
+            .Include(c => c.Fournisseur)
+            .Include(c => c.Lignes)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (commande == null)
+        {
+            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+        }
+
+        if (commande.Statut != StatutCommande.Brouillon)
+        {
+            return BadRequest("Seules les commandes au statut 'Brouillon' peuvent être validées.");
+        }
+
+        if (commande.Lignes.Count == 0)
+        {
+            return BadRequest("Impossible de valider une commande sans ligne.");
+        }
+
+        // Valider la commande
+        commande.Statut = StatutCommande.Validee;
+        commande.DateValidation = DateTime.UtcNow;
+
+        // Sauvegarder les modifications
+        await _context.SaveChangesAsync();
+        return Ok(MapToDto(commande));
+    }
+
+    // POST: api/commandes/{id}/receptionner
+    [HttpPost("{id:int}/receptionner")]
+    [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
+    public async Task<ActionResult<CommandeDto>> Receptionner(int id, [FromBody] ReceptionnerCommandeDto request)
+    {
+        var commande = await _context.Commandes
+            .Include(c => c.Fournisseur)
+            .Include(c => c.Lignes)
+            .FirstOrDefaultAsync(c => c.Id == id);
+        if (commande == null)
+        {
+            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+        }
+
+        if (commande.Statut != StatutCommande.Validee)
+        {
+            return BadRequest("Seules les commandes au statut 'Validée' peuvent être réceptionnées.");
+        }
+
+        if (request.Lignes is null || request.Lignes.Count == 0)
+        {
+            return BadRequest("La réception d'une commande doit contenir au moins une ligne.");
+        }
+
+        // Récuperer les vins des lignes
+        var quantitesRecues = request.Lignes.ToDictionary(l => l.Id, l => l.QuantiteRecue);
+
+        // Vérifier que les lignes de la réception correspondent bien aux lignes de la commande
+        var idsLignesCommande = commande.Lignes.Select(l => l.Id).ToHashSet();
+        var idsInvalides = quantitesRecues.Keys.Where(id => !idsLignesCommande.Contains(id)).ToList();
+        if (idsInvalides.Count > 0)
+        {
+            return BadRequest($"Les lignes de commande avec Id suivants sont invalides et n'appartiennent pas à cette commande : {string.Join(", ", idsInvalides)}");
+        }
+
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            foreach (var ligne in commande.Lignes)
+            {
+                var quantiteRecue = quantitesRecues.TryGetValue(ligne.Id, out var qr) ? qr : ligne.Quantite;
+
+                ligne.QuantiteRecue = quantiteRecue;
+
+                if (quantiteRecue > 0)
+                {
+                    ligne.Vin.Stock += quantiteRecue;
+                }
+            }
+
+            commande.Statut = StatutCommande.Receptionnee;
+            commande.DateReception = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+
+        return Ok(MapToDto(commande));
+    }
+
+    // POST: api/commandes/{id}/annuler
+    [HttpPost]
+    [Route("{id:int}/annuler")]
+    [Authorize(Roles = RolesConstants.Administrateur)] // Contrôle de rôle Identity
+    public async Task<ActionResult<CommandeDto>> Annuler(int id, [FromBody] AnnulerCommandeDto request)
+    {
+        var commande = await _context.Commandes
+            .Include(c => c.Fournisseur)
+            .Include(c => c.Lignes)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (commande == null)
+        {
+            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+        }
+
+        if (commande.Statut == StatutCommande.Receptionnee)
+        {
+            return BadRequest("Une commande réceptionnée ne peut pas être annulée.");
+        }
+
+        if (commande.Statut == StatutCommande.Annulee)
+        {
+            return BadRequest("La commande est déjà annulée.");
+        }
+
+        commande.Statut = StatutCommande.Annulee;
+        // TODO: Stocker le motif d'annulation dans un champ dédié si besoin (non présent dans l'entité actuelle)
+
+        await _context.SaveChangesAsync();
+        return Ok(MapToDto(commande));
+    }
+
+    // Méthode de mapping de Commande vers CommandeDto
     private static CommandeDto MapToDto(Commande commande)
     {
         return new CommandeDto
@@ -170,14 +385,17 @@ public class CommandesController : ControllerBase
             DateCreation = commande.DateCreation,
             DateValidation = commande.DateValidation,
             DateReception = commande.DateReception,
-            Statut = (int)commande.Statut,
+            Statut = commande.Statut,
             FournisseurId = commande.FournisseurId,
             FournisseurNom = commande.Fournisseur?.Nom ?? string.Empty,
             Lignes = commande.Lignes.Select(l => new LigneCommandeDto
             {
                 Id = l.Id,
                 VinId = l.VinId,
-                Quantite = l.Quantite
+                VinNom = l.VinNom,
+                Quantite = l.Quantite,
+                QuantiteRecue = l.QuantiteRecue,
+                PrixUnitaire = l.PrixUnitaire
             }).ToList()
         };
     }
