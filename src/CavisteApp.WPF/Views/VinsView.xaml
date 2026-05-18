@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="CavisteApp.WPF.Views.VinsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+
+        <!-- Barre d'actions -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="Charger"
+                    Command="{Binding ChargerCommand}"
+                    Padding="10,4" Margin="0,0,8,0"/>
+            
+            <Button Content="Ajouter"
+                    Command="{Binding AjouterCommand}"
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur,
+                                 Converter={StaticResource BoolToVisibility}}"/>
+
+            <Button Content="Modifier"
+                    Command="{Binding ModifierCommand}"
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur,
+                                 Converter={StaticResource BoolToVisibility}}"/>
+
+            <Button Content="Supprimer"
+                    Command="{Binding SupprimerCommand}"
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur,
+                                 Converter={StaticResource BoolToVisibility}}"/>
+
+            <TextBlock Text="Chargement..."
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"
+                       Visibility="{Binding EnChargement,
+                                    Converter={StaticResource BoolToVisibility}}"/>
+        </StackPanel>
+
+        <!-- Message d'erreur -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="{Binding MessageErreur}"
+                   Foreground="Red"
+                   Margin="0,0,0,10"
+                   TextWrapping="Wrap">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <!-- Tableau des vins -->
+        <DataGrid ItemsSource="{Binding Vins}"
+                  SelectedItem="{Binding VinSelectionne}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id"       Binding="{Binding Id}"        Width="60"/>
+                <DataGridTextColumn Header="Nom"      Binding="{Binding Nom}"       Width="*"/>
+                <DataGridTextColumn Header="CreatedDate" Binding="{Binding CreatedDate}" Width="100"/>
+                <DataGridTextColumn Header="Prix"     Binding="{Binding Prix, StringFormat=C}" Width="100"/>
+                <DataGridTextColumn Header="Stock"    Binding="{Binding Stock}"     Width="80"/>
+                <DataGridTextColumn Header="SeuilStockBas"    Binding="{Binding SeuilStockBas}"     Width="80"/>
+                <DataGridTextColumn Header="Type"    Binding="{Binding Type}"     Width="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </DockPanel>
+</UserControl>

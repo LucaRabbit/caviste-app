@@ -1,11 +1,12 @@
 ﻿using System.IO;
 using System.Windows;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using CavisteApp.WPF.Services;
 using CavisteApp.WPF.Services.ApiClient;
 using CavisteApp.WPF.ViewModels;
 using CavisteApp.WPF.Views;
+using CavisteApp.WPF.Views.Editing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CavisteApp.WPF;
 
@@ -56,11 +57,23 @@ public partial class App : Application
             client.BaseAddress = new Uri(apiBaseUrl);
         });
 
-        // ViewModels
-        services.AddTransient<LoginViewModel>();
+        // Client pour les opérations sur les vins, avec injection automatique du token JWT via AuthHttpHandler
+        services.AddHttpClient<IVinsApiClient, VinsApiClient>(c =>
+        {
+            c.BaseAddress = new Uri(apiBaseUrl);
+        })
+        .AddHttpMessageHandler<AuthHttpHandler>();   // ← injection auto du token JWT
 
-        // Vues
+        // ViewModels (transient pour créer une nouvelle instance à chaque fois)
+        services.AddTransient<LoginViewModel>();
+        services.AddTransient<VinsViewModel>();
+        services.AddTransient<MainViewModel>();
+
+        // Vues (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginWindow>();
         services.AddTransient<MainWindow>();
+        services.AddTransient<VinsView>();
+        services.AddTransient<EditWindow>();
+        services.AddTransient<VinEditView>();
     }
 }

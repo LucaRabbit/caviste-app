@@ -7,7 +7,7 @@ internal class AuthHttpHandler : DelegatingHandler
 {
     private readonly SessionService _session;
 
-    private AuthHttpHandler(SessionService session)
+    public AuthHttpHandler(SessionService session)
     {
         _session = session;
     }

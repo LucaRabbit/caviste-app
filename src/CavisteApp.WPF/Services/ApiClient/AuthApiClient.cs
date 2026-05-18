@@ -16,7 +16,7 @@ public class AuthApiClient : IAuthApiClient
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/auth/login", request, cancellationToken);
+        var response = await _httpClient.PostAsJsonAsync("api/auth/login", request, JsonOptions.Default, cancellationToken);
 
         // login/mot de passe incorrect => 401 Unauthorized
         if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -25,6 +25,6 @@ public class AuthApiClient : IAuthApiClient
         }
 
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<LoginResponse>(cancellationToken: cancellationToken);
+        return await response.Content.ReadFromJsonAsync<LoginResponse>(JsonOptions.Default, cancellationToken);
     }
 }

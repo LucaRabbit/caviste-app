@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CavisteApp.Api.Dtos.Ventes;
+namespace CavisteApp.DTOs.Ventes;
 
 public class AnnulerVenteDto
 {
