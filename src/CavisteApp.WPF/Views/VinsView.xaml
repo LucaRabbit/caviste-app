@@ -8,6 +8,18 @@
             <Button Content="Charger"
                     Command="{Binding ChargerCommand}"
                     Padding="10,4" Margin="0,0,8,0"/>
+            
+            <Button Content="Ajouter"
+                    Command="{Binding AjouterCommand}"
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur,
+                                 Converter={StaticResource BoolToVisibility}}"/>
+
+            <Button Content="Modifier"
+                    Command="{Binding ModifierCommand}"
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur,
+                                 Converter={StaticResource BoolToVisibility}}"/>
 
             <Button Content="Supprimer"
                     Command="{Binding SupprimerCommand}"
