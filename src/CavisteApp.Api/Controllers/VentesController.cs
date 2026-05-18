@@ -89,7 +89,7 @@ public class VentesController : ControllerBase
 
         if (vente == null)
         {
-            return BadRequest($"La vente avec Id '{id}' n'existe pas.");
+            return NotFound($"La vente avec Id '{id}' n'existe pas.");
         }
 
         return Ok(vente);
@@ -108,7 +108,7 @@ public class VentesController : ControllerBase
         var client = await _context.Clients.FindAsync(request.ClientId);
         if (client == null)
         {
-            return BadRequest($"Le client avec Id '{request.ClientId}' n'existe pas.");
+            return NotFound($"Le client avec Id '{request.ClientId}' n'existe pas.");
         }
 
         // Vérifier si la vente contient des lignes
@@ -125,7 +125,9 @@ public class VentesController : ControllerBase
         foreach (var ligne in request.Lignes)
         {
             if (!vins.TryGetValue(ligne.VinId, out var vin))
-                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
+            { 
+                return NotFound($"Le vin {ligne.VinId} n'existe pas."); 
+            }
         }
 
         // Créer la vente
@@ -186,7 +188,7 @@ public class VentesController : ControllerBase
         // Validation client + vins
         var clientExiste = await _context.Clients.AnyAsync(c => c.Id == request.ClientId);
         if (!clientExiste)
-            return BadRequest($"Le client {request.ClientId} n'existe pas.");
+            return NotFound($"Le client {request.ClientId} n'existe pas.");
 
         var vinIds = request.Lignes.Select(l => l.VinId).Distinct().ToList();
         var vins = await _context.Vins
@@ -196,7 +198,9 @@ public class VentesController : ControllerBase
         foreach (var ligne in request.Lignes)
         {
             if (!vins.ContainsKey(ligne.VinId))
-                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
+            {
+                return NotFound($"Le vin {ligne.VinId} n'existe pas."); 
+            }
         }
 
         vente.ClientId = request.ClientId;
@@ -259,7 +263,7 @@ public class VentesController : ControllerBase
 
         if (vente == null)
         {
-            return BadRequest($"La vente avec Id '{id}' n'existe pas.");
+            return NotFound($"La vente avec Id '{id}' n'existe pas.");
         }
 
         if (vente.Statut != StatutVente.Brouillon)

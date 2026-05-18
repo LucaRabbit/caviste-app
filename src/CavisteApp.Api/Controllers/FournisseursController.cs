@@ -44,7 +44,7 @@ public class FournisseursController : ControllerBase
 
         if (fournisseur == null)
         {
-            return BadRequest($"Le fournisseur avec Id '{id}' n'existe pas.");
+            return NotFound($"Le fournisseur avec Id '{id}' n'existe pas.");
         }
 
         return Ok(MapToDto(fournisseur));
@@ -78,7 +78,7 @@ public class FournisseursController : ControllerBase
 
         if (fournisseur == null)
         {
-            return BadRequest($"Le fournisseur avec Id '{id}' n'existe pas.");
+            return NotFound($"Le fournisseur avec Id '{id}' n'existe pas.");
         }
 
         fournisseur.Nom = request.Nom;
@@ -101,7 +101,7 @@ public class FournisseursController : ControllerBase
 
         if (fournisseur == null)
         {
-            return BadRequest($"Le fournisseur avec Id '{id}' n'existe pas.");
+            return NotFound($"Le fournisseur avec Id '{id}' n'existe pas.");
         }
 
         _context.Fournisseurs.Remove(fournisseur);

@@ -57,7 +57,7 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+                return NotFound($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             return Ok(MapToDto(vin));
@@ -92,7 +92,7 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+                return NotFound($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             vin.Nom = request.Nom;
@@ -113,7 +113,7 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+                return NotFound($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             // Vérifier les relations avec les lignes de vente et de commande
@@ -123,7 +123,7 @@ namespace CavisteApp.Api.Controllers
             // Si le vin est utilisé dans des lignes de vente ou de commande, empêcher la suppression
             if (estUtilise)
             {
-                return BadRequest($"Le vin avec Id '{id}' ne peut pas être supprimé car il est utilisé dans des ventes ou des commandes.");
+                return Conflict($"Le vin avec Id '{id}' ne peut pas être supprimé car il est utilisé dans des ventes ou des commandes.");
             }
 
             _context.Vins.Remove(vin);
@@ -141,7 +141,7 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+                return NotFound($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             vin.Stock += request.Quantite;
@@ -160,11 +160,11 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+                return NotFound($"Le vin avec Id '{id}' n'existe pas.");
             }
             if (request.Quantite > vin.Stock)
             {
-                return BadRequest($"Le retrait de {request.Quantite} unités dépasse le stock actuel de {vin.Stock}.");
+                return Conflict($"Le retrait de {request.Quantite} unités dépasse le stock actuel de {vin.Stock}.");
             }
 
             vin.Stock -= request.Quantite;
@@ -182,7 +182,7 @@ namespace CavisteApp.Api.Controllers
 
             if (vin == null)
             {
-                return BadRequest($"Le vin avec Id '{id}' n'existe pas.");
+                return NotFound($"Le vin avec Id '{id}' n'existe pas.");
             }
 
             vin.Stock = request.StockReel;
