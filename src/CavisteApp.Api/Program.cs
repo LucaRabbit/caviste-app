@@ -9,6 +9,7 @@ using CavisteApp.Api.ExternalApi;
 using CavisteApp.Api.Middleware;
 using CavisteApp.Api.Services.Auth;
 using CavisteApp.Api.Services.Email;
+using CavisteApp.Api.Services.QuestPDF;
 using CavisteApp.Api.Services.Stock;
 using CavisteApp.Api.Services.WineApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,8 +17,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuration QuestPDF License
+QuestPDF.Settings.License = LicenseType.Community;
 
 // EF Core MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -116,6 +121,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.Configure<MailtrapOptions>(builder.Configuration.GetSection("Mailtrap"));
 builder.Services.AddScoped<IEmailService, MailtrapEmailService>();
 builder.Services.AddScoped<AlerteStockService>();
+
+// Services QuestPDF
+builder.Services.AddScoped<QuestPdfService>();
 
 // Client HTTP pour l'API externe de vins
 builder.Services.AddHttpClient<IWineApiClient, WineApiClient>(c =>

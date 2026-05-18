@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CavisteApp.Api.Services.QuestPDF;
 
 namespace CavisteApp.Api.Controllers;
 
@@ -17,15 +18,17 @@ namespace CavisteApp.Api.Controllers;
 [Authorize]
 public class VentesController : ControllerBase
 {
+    private readonly QuestPdfService _pdfService;
     private readonly CavisteDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly AlerteStockService _alerteStock;
 
-    public VentesController(CavisteDbContext context, UserManager<ApplicationUser> userManager, AlerteStockService alerteStock)
+    public VentesController(CavisteDbContext context, UserManager<ApplicationUser> userManager, AlerteStockService alerteStock, QuestPdfService pdfService)
     {
         _context = context;
         _userManager = userManager;
         _alerteStock = alerteStock;
+        _pdfService = pdfService;
     }
 
     // GET api/vins
@@ -338,6 +341,9 @@ public class VentesController : ControllerBase
             await transaction.RollbackAsync();
             throw;
         }
+
+        var pdfBytes = _pdfService.GenererTicketPdf(vente);
+        var cheminPdf = _pdfService.SauvegarderTicketPdf(vente, "C:\\Tickets");
 
         // Alerte de stock bas
         foreach (var (vinId, stockAvant) in stocksAvant)
