@@ -62,18 +62,27 @@ public partial class App : Application
         {
             c.BaseAddress = new Uri(apiBaseUrl);
         })
+        .AddHttpMessageHandler<AuthHttpHandler>();
 
-        .AddHttpMessageHandler<AuthHttpHandler>();   // ← injection auto du token JWT
+        // Client pour les opérations sur les fournisseurs, avec injection automatique du token JWT via AuthHttpHandler
         services.AddHttpClient<IFournisseursApiClient, FournisseursApiClient>(c =>
         {
             c.BaseAddress = new Uri(apiBaseUrl);
         }) .AddHttpMessageHandler<AuthHttpHandler>();
+
         // Client pour les opérations sur les clients, avec injection automatique du token JWT via AuthHttpHandler
         services.AddHttpClient<IClientsApiClient, ClientsApiClient>(c =>
         {
             c.BaseAddress = new Uri(apiBaseUrl);
         })
-        .AddHttpMessageHandler<AuthHttpHandler>();   // ← injection auto du token JWT
+        .AddHttpMessageHandler<AuthHttpHandler>();
+
+        // Client pour les opérations sur les ventes, avec injection automatique du token JWT via AuthHttpHandler
+        services.AddHttpClient<IVentesApiClient, VentesApiClient>(c =>
+        {
+            c.BaseAddress = new Uri(apiBaseUrl);
+        })
+        .AddHttpMessageHandler<AuthHttpHandler>();
 
         // ViewModels (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginViewModel>();
@@ -81,6 +90,7 @@ public partial class App : Application
         services.AddTransient<MainViewModel>();
         services.AddTransient<FournisseursViewModel>();
         services.AddTransient<ClientsViewModel>();
+        services.AddTransient<NouvelleVenteViewModel>();
 
         // Vues (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginWindow>();
@@ -92,7 +102,8 @@ public partial class App : Application
         services.AddTransient<FournisseursView>();
         services.AddTransient<ClientsView>();
         services.AddTransient<ClientEditView>();
-
+        services.AddTransient<VentesView>();
+        services.AddTransient<NouvelleVenteView>();
 
     }
 }

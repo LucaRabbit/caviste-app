@@ -70,32 +70,17 @@ public class VentesController : ControllerBase
     {
         var vente = await _context.Ventes
             .Include(v => v.Client)
+            .Include(v => v.Utilisateur)
             .Include(v => v.Lignes)
-            .Where(v => v.Id == id)
-            .Select(v => new VenteDto
-            {
-                Id = v.Id,
-                Date = v.Date,
-                MontantTotal = v.MontantTotal,
-                ClientId = v.ClientId,
-                ClientNom = v.Client.Nom,
-                Lignes = v.Lignes.Select(l => new LigneVenteDto
-                {
-                    Id = l.Id,
-                    VinId = l.VinId,
-                    VinNom = l.Vin.Nom,
-                    Quantite = l.Quantite,
-                    PrixUnitaire = l.PrixUnitaire
-                }).ToList()
-            })
-            .FirstOrDefaultAsync();
+                .ThenInclude(l => l.Vin)
+            .FirstOrDefaultAsync(v => v.Id == id);
 
         if (vente == null)
         {
             return NotFound($"La vente avec Id '{id}' n'existe pas.");
         }
 
-        return Ok(vente);
+        return Ok(MapToDto(vente));
     }
 
     // POST api/ventes
@@ -347,7 +332,7 @@ public class VentesController : ControllerBase
         }
 
         var pdfBytes = _pdfService.GenererTicketPdf(vente);
-        var cheminPdf = _pdfService.SauvegarderTicketPdf(vente, "C:\\Tickets");
+        var cheminPdf = _pdfService.SauvegarderTicketPdf(vente, "C:\\Users\\lucar\\Downloads");
 
         // Alerte de stock bas
         foreach (var (vinId, stockAvant) in stocksAvant)
