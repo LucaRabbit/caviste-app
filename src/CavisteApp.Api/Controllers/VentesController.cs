@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CavisteApp.Api.Services.QuestPDF;
 
 namespace CavisteApp.Api.Controllers;
 
@@ -17,15 +18,17 @@ namespace CavisteApp.Api.Controllers;
 [Authorize]
 public class VentesController : ControllerBase
 {
+    private readonly QuestPdfService _pdfService;
     private readonly CavisteDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly AlerteStockService _alerteStock;
 
-    public VentesController(CavisteDbContext context, UserManager<ApplicationUser> userManager, AlerteStockService alerteStock)
+    public VentesController(CavisteDbContext context, UserManager<ApplicationUser> userManager, AlerteStockService alerteStock, QuestPdfService pdfService)
     {
         _context = context;
         _userManager = userManager;
         _alerteStock = alerteStock;
+        _pdfService = pdfService;
     }
 
     // GET api/vins
@@ -89,7 +92,7 @@ public class VentesController : ControllerBase
 
         if (vente == null)
         {
-            return BadRequest($"La vente avec Id '{id}' n'existe pas.");
+            return NotFound($"La vente avec Id '{id}' n'existe pas.");
         }
 
         return Ok(vente);
@@ -108,7 +111,7 @@ public class VentesController : ControllerBase
         var client = await _context.Clients.FindAsync(request.ClientId);
         if (client == null)
         {
-            return BadRequest($"Le client avec Id '{request.ClientId}' n'existe pas.");
+            return NotFound($"Le client avec Id '{request.ClientId}' n'existe pas.");
         }
 
         // Vérifier si la vente contient des lignes
@@ -125,7 +128,9 @@ public class VentesController : ControllerBase
         foreach (var ligne in request.Lignes)
         {
             if (!vins.TryGetValue(ligne.VinId, out var vin))
-                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
+            { 
+                return NotFound($"Le vin {ligne.VinId} n'existe pas."); 
+            }
         }
 
         // Créer la vente
@@ -186,7 +191,7 @@ public class VentesController : ControllerBase
         // Validation client + vins
         var clientExiste = await _context.Clients.AnyAsync(c => c.Id == request.ClientId);
         if (!clientExiste)
-            return BadRequest($"Le client {request.ClientId} n'existe pas.");
+            return NotFound($"Le client {request.ClientId} n'existe pas.");
 
         var vinIds = request.Lignes.Select(l => l.VinId).Distinct().ToList();
         var vins = await _context.Vins
@@ -196,7 +201,9 @@ public class VentesController : ControllerBase
         foreach (var ligne in request.Lignes)
         {
             if (!vins.ContainsKey(ligne.VinId))
-                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
+            {
+                return NotFound($"Le vin {ligne.VinId} n'existe pas."); 
+            }
         }
 
         vente.ClientId = request.ClientId;
@@ -259,7 +266,7 @@ public class VentesController : ControllerBase
 
         if (vente == null)
         {
-            return BadRequest($"La vente avec Id '{id}' n'existe pas.");
+            return NotFound($"La vente avec Id '{id}' n'existe pas.");
         }
 
         if (vente.Statut != StatutVente.Brouillon)
@@ -338,6 +345,9 @@ public class VentesController : ControllerBase
             await transaction.RollbackAsync();
             throw;
         }
+
+        var pdfBytes = _pdfService.GenererTicketPdf(vente);
+        var cheminPdf = _pdfService.SauvegarderTicketPdf(vente, "C:\\Tickets");
 
         // Alerte de stock bas
         foreach (var (vinId, stockAvant) in stocksAvant)

@@ -37,7 +37,11 @@
             <DataTemplate DataType="{x:Type vm:ClientsViewModel}">
                 <vw:ClientsView/>
             </DataTemplate>
-            -->
+
+            <DataTemplate DataType="{x:Type editing:ClientEditViewModel}">
+                <editingViews:ClientEditView/>
+            </DataTemplate>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
