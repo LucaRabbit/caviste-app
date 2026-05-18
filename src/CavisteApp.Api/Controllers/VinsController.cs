@@ -1,6 +1,5 @@
 ﻿using CavisteApp.Api.Constants;
 using CavisteApp.Api.Data;
-using CavisteApp.Api.Dtos.Vins;
 using CavisteApp.Api.Entities;
 using CavisteApp.DTOs.Enums;
 using CavisteApp.DTOs.Vins;
