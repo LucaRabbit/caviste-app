@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CavisteApp.Api.Migrations
 {
     [DbContext(typeof(CavisteDbContext))]
-    [Migration("20260517105414_InitialCreate")]
+    [Migration("20260518071758_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
