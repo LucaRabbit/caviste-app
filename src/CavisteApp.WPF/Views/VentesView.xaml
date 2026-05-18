@@ -2,21 +2,29 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DockPanel>
+        <!-- Barre d'actions -->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+            
+            <!-- Boutons -->
             <Button Content="Nouvelle vente" Command="{Binding NouvelleVenteCommand}" Margin="0,0,8,0"/>
             <Button Content="Recharger" Command="{Binding ChargerCommand}" Margin="0,0,15,0"/>
-
+            
+            <!-- Filtre -->
             <TextBlock Text="Filtre :" VerticalAlignment="Center" Margin="0,0,5,0"/>
             <ComboBox ItemsSource="{Binding StatutsDisponibles}"
                       SelectedItem="{Binding FiltreStatut}"
-                      MinWidth="120" Margin="0,0,15,0">
+                      MinWidth="120" Margin="0,0,0,0">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Converter={StaticResource StatutDisplay}}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            <Button Content="✕" ToolTip="Effacer le filtre"
+            Command="{Binding EffacerFiltreCommand}"
+            Margin="0,0,15,0" Padding="10,2"/>
 
+            <!-- Boutons -->
             <Button Content="Valider brouillon" Command="{Binding ValiderBrouillonCommand}" Margin="0,0,8,0"/>
             <Button Content="Supprimer brouillon" Command="{Binding SupprimerBrouillonCommand}" Margin="0,0,8,0"/>
             <Button Content="Modifier brouillon" Command="{Binding ModifierBrouillonCommand}" Margin="0,0,8,0"/>
@@ -27,7 +35,16 @@
         <TextBlock DockPanel.Dock="Top" Text="{Binding MessageErreur}"
                    Foreground="Red" Margin="0,0,0,10" TextWrapping="Wrap"/>
 
-        <DataGrid ItemsSource="{Binding Ventes}"
+        <!-- Zone principale : grille + détails séparés par un splitter -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="*" MinHeight="200"/>
+            </Grid.RowDefinitions>
+
+            <!-- Liste des ventes -->
+            <DataGrid ItemsSource="{Binding Ventes}"
                   SelectedItem="{Binding VenteSelectionnee}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True" CanUserAddRows="False"
@@ -41,5 +58,100 @@
                 <DataGridTextColumn Header="Statut" Binding="{Binding Statut}" Width="100"/>
             </DataGrid.Columns>
         </DataGrid>
+
+        <!-- Séparateur redimensionnable -->
+        <GridSplitter Grid.Row="1" Height="5"
+                        HorizontalAlignment="Stretch"
+                        Background="#DDD"
+                        ResizeDirection="Rows"/>
+            <!-- Panneau de détails -->
+            <Border Grid.Row="2" Background="#FAFAFA"
+                    BorderBrush="#DDD" BorderThickness="1" Padding="15">
+
+                <!-- Si aucune vente sélectionnée, message d'invite -->
+                <Grid>
+                    <TextBlock Text="Sélectionnez une vente pour voir ses détails"
+                               Foreground="Gray" FontStyle="Italic"
+                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding VenteDetails}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Détails de la vente -->
+                    <DockPanel DataContext="{Binding VenteDetails}">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <!-- En-tête -->
+                        <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock>
+                                    <Run Text="Vente n°" FontWeight="Bold"/>
+                                    <Run Text="{Binding Id, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock>
+                                    <Run Text="Client : " FontWeight="Bold"/>
+                                    <Run Text="{Binding ClientNom, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock>
+                                    <Run Text="Date : " FontWeight="Bold"/>
+                                    <Run Text="{Binding Date, Mode=OneWay, StringFormat='dd/MM/yyyy HH:mm'}"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock>
+                                    <Run Text="Statut : " FontWeight="Bold"/>
+                                    <Run Text="{Binding Statut, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock>
+                                    <Run Text="Vendeur : " FontWeight="Bold"/>
+                                    <Run Text="{Binding UtilisateurNom, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock FontSize="16" FontWeight="Bold" Foreground="#722F37">
+                                    <Run Text="Total : "/>
+                                    <Run Text="{Binding MontantTotal, Mode=OneWay, StringFormat=C}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Lignes de la vente -->
+                        <DataGrid ItemsSource="{Binding Lignes}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True" CanUserAddRows="False"
+                                  HeadersVisibility="Column">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Vin"        Binding="{Binding VinNom}"     Width="*"/>
+                                <DataGridTextColumn Header="Type"       Binding="{Binding Type}"       Width="100"/>
+                                <DataGridTextColumn Header="Qté"        Binding="{Binding Quantite}"   Width="60"/>
+                                <DataGridTextColumn Header="Prix unit." Binding="{Binding PrixUnitaire, StringFormat=C}" Width="100"/>
+                                <DataGridTextColumn Header="Sous-total" Binding="{Binding SousTotal, StringFormat=C}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </Grid>
+            </Border>
+        </Grid>
     </DockPanel>
 </UserControl>

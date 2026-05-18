@@ -28,7 +28,12 @@ public class VentesApiClient : IVentesApiClient
         var response = await _http.GetAsync($"api/ventes/{id}", ct);
         if (response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<VenteDto>(JsonOptions.Default, ct);
+
+        // DEBUG temporaire
+        var json = await response.Content.ReadAsStringAsync(ct);
+        System.Diagnostics.Debug.WriteLine($"[GetParIdAsync] {json}");
+
+        return System.Text.Json.JsonSerializer.Deserialize<VenteDto>(json, JsonOptions.Default);
     }
 
     public async Task<VenteDto> CreerAsync(CreerVenteDto request, CancellationToken ct = default)

@@ -27,9 +27,15 @@
             Background="#2D7A2D" Foreground="White"/>
         </StackPanel>
 
+        <Border DockPanel.Dock="Bottom" Background="#FFF3CD" BorderBrush="#FFC107" BorderThickness="1"
+        Padding="10" Margin="0,0,0,0"
+        Visibility="{Binding PanierIncoherent, Converter={StaticResource BoolToVisibility}}">
+            <TextBlock Text="{Binding MessageCoherence}" Foreground="#856404"/>
+        </Border>
+        
         <!-- Message d'erreur -->
         <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageErreur}"
-                   Foreground="Red" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                   Foreground="Red" Margin="0,0,0,0" TextWrapping="Wrap"/>
 
         <!-- Total -->
         <Border DockPanel.Dock="Bottom" Background="#F0F0F0" Padding="10" Margin="0,10,0,0">
@@ -72,9 +78,13 @@
                                  Margin="0,0,8,0"/>
                         <Button Grid.Column="2" Content="Ajouter" Command="{Binding AjouterLigneCommand}"/>
                     </Grid>
-                    <TextBlock Margin="0,5,0,0" FontSize="11" Foreground="Gray"
-                               Text="{Binding StockDisponibleVinAAjouter, StringFormat='Stock disponible : {0}'}"
-                               Visibility="{Binding VinAAjouter, Converter={StaticResource BoolToVisibility}}"/>
+                    <StackPanel Orientation="Vertical" Margin="0,5,0,0">
+                        <TextBlock FontSize="11" Foreground="Gray"
+                                   Text="{Binding StockDisponibleVinAAjouter, StringFormat='Stock disponible : {0}'}"/>
+                         <TextBlock FontSize="11" Foreground="Red"
+                                   Text="Quantité supérieure au stock disponible"
+                                   Visibility="{Binding QuantiteDepasseStock, Converter={StaticResource BoolToVisibility}}"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
