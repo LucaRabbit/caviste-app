@@ -62,12 +62,17 @@ public partial class App : Application
         {
             c.BaseAddress = new Uri(apiBaseUrl);
         })
-        .AddHttpMessageHandler<AuthHttpHandler>();   // ← injection auto du token JWT
 
+        .AddHttpMessageHandler<AuthHttpHandler>();   // ← injection auto du token JWT
+        services.AddHttpClient<IFournisseursApiClient, FournisseursApiClient>(c =>
+        {
+            c.BaseAddress = new Uri(apiBaseUrl);
+        }) .AddHttpMessageHandler<AuthHttpHandler>();
         // ViewModels (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginViewModel>();
         services.AddTransient<VinsViewModel>();
         services.AddTransient<MainViewModel>();
+        services.AddTransient<FournisseursViewModel>();
 
         // Vues (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginWindow>();
@@ -75,5 +80,7 @@ public partial class App : Application
         services.AddTransient<VinsView>();
         services.AddTransient<EditWindow>();
         services.AddTransient<VinEditView>();
+        services.AddTransient<FournisseurEditView>();
+        services.AddTransient<FournisseursView>();
     }
 }

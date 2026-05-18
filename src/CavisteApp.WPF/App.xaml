@@ -26,6 +26,13 @@
             <DataTemplate DataType="{x:Type editing:VinEditViewModel}">
                 <editingViews:VinEditView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:FournisseursViewModel}">
+                <vw:FournisseursView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type editing:FournisseurEditViewModel}">
+                <editingViews:FournisseurEditView/>
+            </DataTemplate>
             <!-- Ajoute ici les futurs mappings :
             <DataTemplate DataType="{x:Type vm:ClientsViewModel}">
                 <vw:ClientsView/>
