@@ -82,6 +82,18 @@
         <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
     </Style>
 
+    <!-- TextBox avec validation (ex: champ numérique qui affiche une bordure rouge en cas d'erreur de conversion) -->
+    <Style x:Key="TextBoxAvecValidation" TargetType="TextBox"
+       BasedOn="{StaticResource {x:Type TextBox}}">
+        <Style.Triggers>
+            <!-- Erreur de conversion (lettres dans un champ numérique) -->
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="BorderBrush" Value="Red"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- ─── DataGrid ────────────────────────────────────── -->
     <Style TargetType="DataGrid">
         <Setter Property="Background"     Value="{StaticResource SurfaceBrush}"/>
