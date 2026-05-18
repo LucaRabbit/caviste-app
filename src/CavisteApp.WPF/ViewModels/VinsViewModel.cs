@@ -5,6 +5,8 @@ using System.Windows.Input;
 using CavisteApp.DTOs.Vins;
 using CavisteApp.WPF.Services;
 using CavisteApp.WPF.Services.ApiClient;
+using CavisteApp.WPF.ViewModels.Editing;
+using CavisteApp.WPF.Views;
 
 namespace CavisteApp.WPF.ViewModels;
 
@@ -24,8 +26,13 @@ public class VinsViewModel : ViewModelBase
 
         Vins = new ObservableCollection<VinDto>();
         ChargerCommand = new RelayCommand(ChargerAsync);
+        AjouterCommand = new RelayNavCommand(Ajouter,
+                                () => EstAdministrateur);
+        ModifierCommand = new RelayNavCommand(Modifier,
+                                () => VinSelectionne is not null && EstAdministrateur);
         SupprimerCommand = new RelayCommand(SupprimerAsync,
-            () => VinSelectionne is not null && EstAdministrateur);
+                                () => VinSelectionne is not null && EstAdministrateur);
+
 
         // Lancer le chargement en arrière-plan
         _ = ChargerAsync();
@@ -42,7 +49,8 @@ public class VinsViewModel : ViewModelBase
         {
             if (SetProperty(ref _vinSelectionne, value))
             {
-                ((RelayCommand)SupprimerCommand).RaiseCanExecuteChanged();
+                (ModifierCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
+                (SupprimerCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
     }
@@ -64,6 +72,8 @@ public class VinsViewModel : ViewModelBase
     // ─── Commandes ──────────────────────────────────────────────
 
     public ICommand ChargerCommand { get; }
+    public ICommand AjouterCommand { get; }
+    public ICommand ModifierCommand { get; }
     public ICommand SupprimerCommand { get; }
 
     // ─── Logique ────────────────────────────────────────────────
@@ -121,4 +131,37 @@ public class VinsViewModel : ViewModelBase
             MessageErreur = $"Erreur : {ex.Message}";
         }
     }
+
+    private void Ajouter()
+    {
+        var vm = new VinEditViewModel(_vinsApi);
+        if (OuvrirFormulaire(vm) && vm.Resultat is not null)
+        {
+            Vins.Add(vm.Resultat);
+            VinSelectionne = vm.Resultat;
+        }
+    }
+
+    private void Modifier()
+    {
+        if (VinSelectionne is null) return;
+        var vm = new VinEditViewModel(_vinsApi, VinSelectionne);
+        if (OuvrirFormulaire(vm) && vm.Resultat is not null)
+        {
+            // Remplace dans la collection
+            var index = Vins.IndexOf(VinSelectionne);
+            if (index >= 0) Vins[index] = vm.Resultat;
+            VinSelectionne = vm.Resultat;
+        }
+    }
+
+    private bool OuvrirFormulaire(IEditViewModel vm)
+    {
+        var window = new EditWindow(vm)
+        {
+            Owner = Application.Current.MainWindow
+        };
+        return window.ShowDialog() == true;
+    }
+
 }
