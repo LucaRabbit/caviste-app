@@ -3,18 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:CavisteApp.WPF.ViewModels"
              xmlns:vw="clr-namespace:CavisteApp.WPF.Views"
-             xmlns:conv="clr-namespace:CavisteApp.WPF.Converters">
+             xmlns:conv="clr-namespace:CavisteApp.WPF.Converters"
+             xmlns:editing="clr-namespace:CavisteApp.WPF.ViewModels.Editing"
+             xmlns:editingViews="clr-namespace:CavisteApp.WPF.Views.Editing"
+             >
     
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
+
+            <!-- Converters -->
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
-        
+            <conv:InverseBoolConverter x:Key="InverseBool"/>
+            <conv:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBool"/>
+
             <DataTemplate DataType="{x:Type vm:VinsViewModel}">
                 <vw:VinsView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type editing:VinEditViewModel}">
+                <editingViews:VinEditView/>
             </DataTemplate>
             <!-- Ajoute ici les futurs mappings :
             <DataTemplate DataType="{x:Type vm:ClientsViewModel}">
