@@ -1,11 +1,12 @@
 ﻿using System.IO;
 using System.Windows;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using CavisteApp.WPF.Services;
 using CavisteApp.WPF.Services.ApiClient;
 using CavisteApp.WPF.ViewModels;
 using CavisteApp.WPF.Views;
+using CavisteApp.WPF.Views.Editing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CavisteApp.WPF;
 
@@ -72,5 +73,7 @@ public partial class App : Application
         services.AddTransient<LoginWindow>();
         services.AddTransient<MainWindow>();
         services.AddTransient<VinsView>();
+        services.AddTransient<EditWindow>();
+        services.AddTransient<VinEditView>();
     }
 }
