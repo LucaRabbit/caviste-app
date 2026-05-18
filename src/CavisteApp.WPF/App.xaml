@@ -33,7 +33,7 @@
             <DataTemplate DataType="{x:Type editing:FournisseurEditViewModel}">
                 <editingViews:FournisseurEditView/>
             </DataTemplate>
-            <!-- Ajoute ici les futurs mappings :
+
             <DataTemplate DataType="{x:Type vm:ClientsViewModel}">
                 <vw:ClientsView/>
             </DataTemplate>
