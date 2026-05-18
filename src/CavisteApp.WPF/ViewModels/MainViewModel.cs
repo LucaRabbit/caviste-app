@@ -19,10 +19,9 @@ public class MainViewModel : ViewModelBase
 
         AfficherVinsCommand = new RelayNavCommand(
             () => CurrentViewModel = _services.GetRequiredService<VinsViewModel>());
+        AfficherClientsCommand = new RelayNavCommand(
+            () => CurrentViewModel = _services.GetRequiredService<ClientsViewModel>());
 
-        // Pour une future vue :
-        // AfficherClientsCommand = new RelayNavCommand(
-        //     () => CurrentViewModel = _services.GetRequiredService<ClientsViewModel>());
     }
 
     public ViewModelBase? CurrentViewModel
@@ -37,4 +36,5 @@ public class MainViewModel : ViewModelBase
             : $"Bienvenue {_session.Utilisateur.Login} ({_session.Utilisateur.Role}) 👤";
 
     public ICommand AfficherVinsCommand { get; }
+    public ICommand AfficherClientsCommand { get; }
 }
