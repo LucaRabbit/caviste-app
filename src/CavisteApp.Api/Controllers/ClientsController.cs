@@ -41,7 +41,7 @@ namespace CavisteApp.Api.Controllers
 
             if (client == null)
             {
-                return BadRequest($"Le client avec Id '{id}' n'existe pas.");
+                return NotFound($"Le client avec Id '{id}' n'existe pas.");
             }
 
             return Ok(MapToDto(client));
@@ -77,7 +77,7 @@ namespace CavisteApp.Api.Controllers
 
             if (client == null)
             {
-                return BadRequest($"Le client avec Id '{id}' n'existe pas.");
+                return NotFound($"Le client avec Id '{id}' n'existe pas.");
             }
 
             client.Nom = request.Nom;
@@ -101,7 +101,7 @@ namespace CavisteApp.Api.Controllers
 
             if (client == null)
             {
-                return BadRequest($"Le client avec Id '{id}' n'existe pas.");
+                return NotFound($"Le client avec Id '{id}' n'existe pas.");
             }
 
             _context.Clients.Remove(client);
