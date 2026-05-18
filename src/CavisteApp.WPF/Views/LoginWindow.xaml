@@ -4,8 +4,13 @@
         Title="Caviste App - Connexion"
         Height="350" Width="400"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
-    <Grid Margin="30">
+        ResizeMode="NoResize"
+        WindowStyle="None"
+AllowsTransparency="True"
+        Background="Transparent">
+    <Border CornerRadius="20"
+            Background="#DDE6ED">
+        <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -44,8 +49,9 @@
                 Content="Se connecter"
                 Command="{Binding LoginCommand}"
                 Padding="10"
-                Background="#7B1F2D" Foreground="White"
+                Background="#27374D" Foreground="White"
                 FontWeight="Bold"
                 IsDefault="True"/>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>
