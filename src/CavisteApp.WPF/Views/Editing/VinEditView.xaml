@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="CavisteApp.WPF.Views.Editing.VinEditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+
+        <!-- Nom -->
+        <TextBlock Text="Nom"/>
+        <TextBox x:Name="TbNom" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="Nom"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbNom, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbNom, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Type -->
+        <TextBlock Text="Type"/>
+        <ComboBox ItemsSource="{Binding TypesVin}" SelectedItem="{Binding Type}"
+                  Margin="0,0,0,10"/>
+
+        <!-- Prix -->
+        <TextBlock Text="Prix"/>
+        <TextBox x:Name="TbPrix" Margin="0,0,0,2"
+         Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="PrixTexte"
+                 UpdateSourceTrigger="PropertyChanged"
+                 ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+   Text="{Binding ElementName=TbPrix, Path=(Validation.Errors)[0].ErrorContent}"
+   Visibility="{Binding ElementName=TbPrix, Path=(Validation.HasError),
+                Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Stock actuel -->
+        <TextBlock Text="Stock actuel"/>
+        <TextBox x:Name="TbStock" IsReadOnly="{Binding EstModification}" Margin="0,0,0,2"
+         Style="{StaticResource TextBoxAvecValidation}"
+         IsEnabled="False">
+            <TextBox.Text>
+                <Binding Path="StockActuelTexte"
+                 UpdateSourceTrigger="PropertyChanged"
+                 ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+
+        <!-- Seuil stock bas -->
+        <TextBlock Text="Seuil stock bas"/>
+        <TextBox x:Name="TbSeuil" Margin="0,0,0,2"
+         Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="SeuilStockBasTexte"
+                 UpdateSourceTrigger="PropertyChanged"
+                 ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+           Text="{Binding ElementName=TbSeuil, Path=(Validation.Errors)[0].ErrorContent}"
+           Visibility="{Binding ElementName=TbSeuil, Path=(Validation.HasError),
+                        Converter={StaticResource BoolToVisibility}}"/>
+
+    </StackPanel>
+</UserControl>
