@@ -43,11 +43,11 @@ public class QuestPdfService
                         // En-tête du ticket
                         column.Item().Row(row =>
                         {
-                            row.RelativeColumn().AlignCenter().Text("CAVISTE APP")
+                            row.RelativeItem().AlignCenter().Text("CAVISTE APP")
                                 .FontSize(20)
                                 .Bold();
 
-                            row.RelativeColumn().AlignRight().Text("Ticket de Vente")
+                            row.RelativeItem().AlignRight().Text("Ticket de Vente")
                                 .FontSize(12)
                                 .Bold();
                         });
@@ -57,19 +57,19 @@ public class QuestPdfService
                         // Informations de la vente
                         column.Item().PaddingVertical(10).Row(row =>
                         {
-                            row.RelativeColumn().Column(col =>
+                            row.RelativeItem().Column(col =>
                             {
                                 col.Item().Text("N° Vente").Bold().FontSize(10);
                                 col.Item().Text($"#{vente.Id}").FontSize(11);
                             });
 
-                            row.RelativeColumn().Column(col =>
+                            row.RelativeItem().Column(col =>
                             {
                                 col.Item().Text("Date").Bold().FontSize(10);
                                 col.Item().Text(vente.Date.ToString("dd/MM/yyyy HH:mm")).FontSize(11);
                             });
 
-                            row.RelativeColumn().Column(col =>
+                            row.RelativeItem().Column(col =>
                             {
                                 col.Item().Text("Statut").Bold().FontSize(10);
                                 col.Item().Text(vente.Statut.ToString()).FontSize(11);
@@ -129,14 +129,14 @@ public class QuestPdfService
 
                             col.Item().Row(row =>
                             {
-                                row.RelativeColumn().Text("Sous-total:").Bold().FontSize(10);
-                                row.RelativeColumn().AlignRight().Text($"{sousTotal:F2}€").FontSize(10);
+                                row.RelativeItem().Text("Sous-total:").Bold().FontSize(10);
+                                row.RelativeItem().AlignRight().Text($"{sousTotal:F2}€").FontSize(10);
                             });
 
                             col.Item().Row(row =>
                             {
-                                row.RelativeColumn().Text("TOTAL:").Bold().FontSize(12);
-                                row.RelativeColumn().AlignRight().Text($"{vente.MontantTotal:F2}€").Bold().FontSize(12);
+                                row.RelativeItem().Text("TOTAL:").Bold().FontSize(12);
+                                row.RelativeItem().AlignRight().Text($"{vente.MontantTotal:F2}€").Bold().FontSize(12);
                             });
                         });
 
