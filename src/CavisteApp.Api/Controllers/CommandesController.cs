@@ -63,31 +63,15 @@ public class CommandesController : ControllerBase
         var commande = await _context.Commandes
             .Include(c => c.Fournisseur)
             .Include(c => c.Lignes)
-            .Where(c => c.Id == id)
-            .Select(c => new CommandeDto
-            {
-                Id = c.Id,
-                DateCreation = c.DateCreation,
-                DateValidation = c.DateValidation,
-                DateReception = c.DateReception,
-                Statut = c.Statut,
-                FournisseurNom = c.Fournisseur.Nom,
-                FournisseurId = c.Fournisseur.Id,
-                Lignes = c.Lignes.Select(l => new LigneCommandeDto
-                {
-                    Id = l.Id,
-                    VinId = l.VinId,
-                    VinNom = l.VinNom,
-                    Quantite = l.Quantite,
-                }).ToList()
-            })
-            .FirstOrDefaultAsync();
+                .ThenInclude(l => l.Vin)
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         if (commande == null)
         {
-            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+            return NotFound($"La commande avec Id '{id}' n'existe pas.");
         }
-        return Ok(commande);
+
+        return Ok(MapToDto(commande));
     }
 
     [HttpPost]
@@ -97,7 +81,7 @@ public class CommandesController : ControllerBase
         var fournisseur = await _context.Fournisseurs.FindAsync(request.FournisseurId);
         if (fournisseur == null)
         {
-            return BadRequest($"Le fournisseur avec Id '{request.FournisseurId}' n'existe pas.");
+            return NotFound($"Le fournisseur avec Id '{request.FournisseurId}' n'existe pas.");
         }
 
         // Vérifier si la commande contient des lignes
@@ -114,7 +98,9 @@ public class CommandesController : ControllerBase
         foreach (var ligne in request.Lignes)
         {
             if (!vins.TryGetValue(ligne.VinId, out var vin))
-                return BadRequest($"Le vin avec Id {ligne.VinId} n'existe pas.");
+            {
+                return NotFound($"Le vin avec Id {ligne.VinId} n'existe pas."); 
+            }
         }
 
         // Créer la commande
@@ -123,10 +109,15 @@ public class CommandesController : ControllerBase
             DateCreation = DateTime.UtcNow,
             Statut = StatutCommande.Brouillon,
             FournisseurId = request.FournisseurId,
-            Lignes = request.Lignes.Select(l => new LigneCommande
+            Lignes = request.Lignes.Select(l =>
             {
-                VinId = l.VinId,
-                Quantite = l.Quantite
+                var vin = vins[l.VinId];
+                return new LigneCommande
+                {
+                    VinId = vin.Id,
+                    VinNom = vin.Nom,
+                    Quantite = l.Quantite
+                };
             }).ToList()
         };
 
@@ -162,7 +153,7 @@ public class CommandesController : ControllerBase
         // Vérifier que le fournisseur existe
         var fournisseurExiste = await _context.Fournisseurs.AnyAsync(f => f.Id == request.FournisseurId);
         if (!fournisseurExiste)
-            return BadRequest($"Le fournisseur {request.FournisseurId} n'existe pas.");
+            return NotFound($"Le fournisseur {request.FournisseurId} n'existe pas.");
 
         // Vérifier que les vins existent
         var vinIds = request.Lignes.Select(l => l.VinId).Distinct().ToList();
@@ -173,7 +164,7 @@ public class CommandesController : ControllerBase
         foreach (var ligne in request.Lignes)
         {
             if (!vins.ContainsKey(ligne.VinId))
-                return BadRequest($"Le vin {ligne.VinId} n'existe pas.");
+                return NotFound($"Le vin {ligne.VinId} n'existe pas.");
         }
 
         // Mise à jour des champs simples
@@ -215,10 +206,9 @@ public class CommandesController : ControllerBase
                 // Nouvelle ligne
                 commande.Lignes.Add(new LigneCommande
                 {
-                    VinId = ligneDto.VinId,
+                    VinId = vin.Id,
                     VinNom = vin.Nom,
-                    VinType = vin.Type,
-                    Quantite = ligneDto.Quantite,
+                    Quantite = ligneDto.Quantite
                 });
             }
         }
@@ -235,12 +225,12 @@ public class CommandesController : ControllerBase
         var commande = await _context.Commandes.FindAsync(id);
         if (commande == null)
         {
-            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+            return NotFound($"La commande avec Id '{id}' n'existe pas.");
         }
 
         if (commande.Statut != StatutCommande.Brouillon)
         {
-            return BadRequest(
+            return Conflict(
                 $"Seules les commandes au statut 'Brouillon' peuvent être supprimées (statut actuel : {commande.Statut})." +
                 "Utiliser l'annulation pour les commandes en cours.");
         }
@@ -265,12 +255,12 @@ public class CommandesController : ControllerBase
 
         if (commande == null)
         {
-            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+            return NotFound($"La commande avec Id '{id}' n'existe pas.");
         }
 
         if (commande.Statut != StatutCommande.Brouillon)
         {
-            return BadRequest("Seules les commandes au statut 'Brouillon' peuvent être validées.");
+            return Conflict("Seules les commandes au statut 'Brouillon' peuvent être validées.");
         }
 
         if (commande.Lignes.Count == 0)
@@ -299,12 +289,12 @@ public class CommandesController : ControllerBase
             .FirstOrDefaultAsync(c => c.Id == id);
         if (commande == null)
         {
-            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+            return NotFound($"La commande avec Id '{id}' n'existe pas.");
         }
 
         if (commande.Statut != StatutCommande.Validee)
         {
-            return BadRequest("Seules les commandes au statut 'Validée' peuvent être réceptionnées.");
+            return Conflict("Seules les commandes au statut 'Validée' peuvent être réceptionnées.");
         }
 
         if (request.Lignes is null || request.Lignes.Count == 0)
@@ -366,17 +356,17 @@ public class CommandesController : ControllerBase
 
         if (commande == null)
         {
-            return BadRequest($"La commande avec Id '{id}' n'existe pas.");
+            return NotFound($"La commande avec Id '{id}' n'existe pas.");
         }
 
         if (commande.Statut == StatutCommande.Receptionnee)
         {
-            return BadRequest("Une commande réceptionnée ne peut pas être annulée.");
+            return Conflict("Une commande réceptionnée ne peut pas être annulée.");
         }
 
         if (commande.Statut == StatutCommande.Annulee)
         {
-            return BadRequest("La commande est déjà annulée.");
+            return Conflict("La commande est déjà annulée.");
         }
 
         commande.Statut = StatutCommande.Annulee;

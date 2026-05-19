@@ -11,4 +11,5 @@ public interface IVinsApiClient
     Task ModifierAsync(int id, UpdateVinDto request, CancellationToken ct = default);
     Task SupprimerAsync(int id, CancellationToken ct = default);
     Task AjusterStockAsync(int id, InventaireDto request, CancellationToken ct = default);
+    Task RetirerStockAsync(int id, RetraitStockDto request, CancellationToken ct = default);
 }

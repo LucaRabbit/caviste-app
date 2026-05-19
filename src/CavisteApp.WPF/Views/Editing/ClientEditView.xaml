@@ -1,0 +1,127 @@
+﻿<UserControl x:Class="CavisteApp.WPF.Views.Editing.ClientEditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+
+        <!-- Nom -->
+        <TextBlock Text="Nom"/>
+        <TextBox x:Name="TbNom" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="Nom"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbNom, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbNom, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Prenom -->
+        <TextBlock Text="Prenom"/>
+        <TextBox x:Name="TbPrenom" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="Prenom"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbPrenom, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbPrenom, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Email -->
+        <TextBlock Text="Email"/>
+        <TextBox x:Name="TbEmail" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="Email"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbEmail, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbEmail, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Nom -->
+        <TextBlock Text="Téléphone"/>
+        <TextBox x:Name="TbTelephone" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="Telephone"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbTelephone, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbTelephone, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- NumRue -->
+        <TextBlock Text="Num de Rue"/>
+        <TextBox x:Name="TbNumRue" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="NumRueTexte"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbNumRue, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbNumRue, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+        
+        <!-- NomRue -->
+        <TextBlock Text="Nom de Rue"/>
+        <TextBox x:Name="TbNomRue" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="NomRue"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbNomRue, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbNomRue, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+        
+        <!-- CodePostal -->
+        <TextBlock Text="Code Postal"/>
+        <TextBox x:Name="TbCodePostal" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="CodePostal"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbCodePostal, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbCodePostal, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Ville -->
+        <TextBlock Text="Ville"/>
+        <TextBox x:Name="TbVille" Margin="0,0,0,2"
+                 Style="{StaticResource TextBoxAvecValidation}">
+            <TextBox.Text>
+                <Binding Path="Ville"
+                         UpdateSourceTrigger="PropertyChanged"
+                         ValidatesOnNotifyDataErrors="True"/>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Foreground="Red" FontSize="11" Margin="0,0,0,8"
+                   Text="{Binding ElementName=TbVille, Path=(Validation.Errors)[0].ErrorContent}"
+                   Visibility="{Binding ElementName=TbVille, Path=(Validation.HasError),
+                                Converter={StaticResource BoolToVisibility}}"/>
+
+    </StackPanel>
+</UserControl>

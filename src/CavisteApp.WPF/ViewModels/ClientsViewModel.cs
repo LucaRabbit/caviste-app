@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
+using CavisteApp.DTOs.Clients;
 using CavisteApp.DTOs.Vins;
 using CavisteApp.WPF.Services;
 using CavisteApp.WPF.Services.ApiClient;
@@ -10,32 +11,28 @@ using CavisteApp.WPF.Views;
 
 namespace CavisteApp.WPF.ViewModels;
 
-public class VinsViewModel : ViewModelBase
+public class ClientsViewModel : ViewModelBase
 {
-    private readonly IVinsApiClient _vinsApi;
+    private readonly IClientsApiClient _clientsApi;
     private readonly SessionService _session;
 
     private bool _enChargement;
-    private VinDto? _vinSelectionne;
+    private ClientDto? _clientSelectionne;
     private string _messageErreur = string.Empty;
 
-    public VinsViewModel(IVinsApiClient vinsApi, SessionService session)
+    public ClientsViewModel(IClientsApiClient clientsApi, SessionService session)
     {
-        _vinsApi = vinsApi;
+        _clientsApi = clientsApi;
         _session = session;
 
-        Vins = new ObservableCollection<VinDto>();
+        Clients = new ObservableCollection<ClientDto>();
         ChargerCommand = new RelayCommand(ChargerAsync);
         AjouterCommand = new RelayNavCommand(Ajouter,
                                 () => EstAdministrateur);
         ModifierCommand = new RelayNavCommand(Modifier,
-                                () => VinSelectionne is not null && EstAdministrateur);
+                                () => ClientSelectionne is not null && EstAdministrateur);
         SupprimerCommand = new RelayCommand(SupprimerAsync,
-                                () => VinSelectionne is not null && EstAdministrateur);
-        InventaireCommand = new RelayNavCommand(() => OuvrirAjustement(ModeAjustement.Inventaire),
-                                () => VinSelectionne is not null && EstAdministrateur);
-        RetraitCommand = new RelayNavCommand(() => OuvrirAjustement(ModeAjustement.Retrait),
-                                () => VinSelectionne is not null && EstAdministrateur);
+                                () => ClientSelectionne is not null && EstAdministrateur);
 
 
         // Lancer le chargement en arrière-plan
@@ -44,19 +41,17 @@ public class VinsViewModel : ViewModelBase
 
     // ─── Propriétés liées à la vue ───────────────────────────────
 
-    public ObservableCollection<VinDto> Vins { get; }
+    public ObservableCollection<ClientDto> Clients { get; }
 
-    public VinDto? VinSelectionne
+    public ClientDto? ClientSelectionne
     {
-        get => _vinSelectionne;
+        get => _clientSelectionne;
         set
         {
-            if (SetProperty(ref _vinSelectionne, value))
+            if (SetProperty(ref _clientSelectionne, value))
             {
                 (ModifierCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
                 (SupprimerCommand as RelayCommand)?.RaiseCanExecuteChanged();
-                (InventaireCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
-                (RetraitCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
             }
         }
     }
@@ -81,8 +76,6 @@ public class VinsViewModel : ViewModelBase
     public ICommand AjouterCommand { get; }
     public ICommand ModifierCommand { get; }
     public ICommand SupprimerCommand { get; }
-    public ICommand InventaireCommand { get; }
-    public ICommand RetraitCommand { get; }
 
     // ─── Logique ────────────────────────────────────────────────
 
@@ -93,10 +86,10 @@ public class VinsViewModel : ViewModelBase
             EnChargement = true;
             MessageErreur = string.Empty;
 
-            var vins = await _vinsApi.GetTousAsync();
+            var clients = await _clientsApi.GetTousAsync();
 
-            Vins.Clear();
-            foreach (var v in vins) Vins.Add(v);
+            Clients.Clear();
+            foreach (var c in clients) Clients.Add(c);
         }
         catch (HttpRequestException ex)
         {
@@ -114,10 +107,10 @@ public class VinsViewModel : ViewModelBase
 
     private async Task SupprimerAsync()
     {
-        if (VinSelectionne is null) return;
+        if (ClientSelectionne is null) return;
 
         var confirmation = MessageBox.Show(
-            $"Supprimer le vin '{VinSelectionne.Nom}' ?",
+            $"Supprimer le client '{ClientSelectionne.Nom} {ClientSelectionne.Prenom}' ?",
             "Confirmation",
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning);
@@ -126,9 +119,9 @@ public class VinsViewModel : ViewModelBase
 
         try
         {
-            await _vinsApi.SupprimerAsync(VinSelectionne.Id);
-            Vins.Remove(VinSelectionne);
-            VinSelectionne = null;
+            await _clientsApi.SupprimerAsync(ClientSelectionne.Id);
+            Clients.Remove(ClientSelectionne);
+            ClientSelectionne = null;
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("409"))
         {
@@ -146,24 +139,24 @@ public class VinsViewModel : ViewModelBase
 
     private void Ajouter()
     {
-        var vm = new VinEditViewModel(_vinsApi);
+        var vm = new ClientEditViewModel(_clientsApi);
         if (OuvrirFormulaire(vm) && vm.Resultat is not null)
         {
-            Vins.Add(vm.Resultat);
-            VinSelectionne = vm.Resultat;
+            Clients.Add(vm.Resultat);
+            ClientSelectionne = vm.Resultat;
         }
     }
 
     private void Modifier()
     {
-        if (VinSelectionne is null) return;
-        var vm = new VinEditViewModel(_vinsApi, VinSelectionne);
+        if (ClientSelectionne is null) return;
+        var vm = new ClientEditViewModel(_clientsApi, ClientSelectionne);
         if (OuvrirFormulaire(vm) && vm.Resultat is not null)
         {
             // Remplace dans la collection
-            var index = Vins.IndexOf(VinSelectionne);
-            if (index >= 0) Vins[index] = vm.Resultat;
-            VinSelectionne = vm.Resultat;
+            var index = Clients.IndexOf(ClientSelectionne);
+            if (index >= 0) Clients[index] = vm.Resultat;
+            ClientSelectionne = vm.Resultat;
         }
     }
 
@@ -174,20 +167,6 @@ public class VinsViewModel : ViewModelBase
             Owner = Application.Current.MainWindow
         };
         return window.ShowDialog() == true;
-    }
-
-    private void OuvrirAjustement(ModeAjustement mode)
-    {
-        if (VinSelectionne is null) return;
-
-        var vm = new AjusterStockViewModel(_vinsApi, VinSelectionne, mode);
-        var window = new AjusterStockWindow(vm) { Owner = Application.Current.MainWindow };
-
-        if (window.ShowDialog() == true)
-        {
-            // Recharge pour avoir le nouveau stock
-            _ = ChargerAsync();
-        }
     }
 
 }

@@ -44,7 +44,7 @@ public class FournisseursController : ControllerBase
 
         if (fournisseur == null)
         {
-            return BadRequest($"Le fournisseur avec Id '{id}' n'existe pas.");
+            return NotFound($"Le fournisseur avec Id '{id}' n'existe pas.");
         }
 
         return Ok(MapToDto(fournisseur));
@@ -78,7 +78,7 @@ public class FournisseursController : ControllerBase
 
         if (fournisseur == null)
         {
-            return BadRequest($"Le fournisseur avec Id '{id}' n'existe pas.");
+            return NotFound($"Le fournisseur avec Id '{id}' n'existe pas.");
         }
 
         fournisseur.Nom = request.Nom;
@@ -101,7 +101,15 @@ public class FournisseursController : ControllerBase
 
         if (fournisseur == null)
         {
-            return BadRequest($"Le fournisseur avec Id '{id}' n'existe pas.");
+            return NotFound($"Le fournisseur avec Id '{id}' n'existe pas.");
+        }
+
+        var estUtilise = await _context.Set<Commande>().AnyAsync(li => li.FournisseurId == id);
+
+        // Si le fournisseur est utilisé dans des lignes de commande, empêcher la suppression
+        if (estUtilise)
+        {
+            return Conflict($"Le fournisseur avec Id '{id}' ne peut pas être supprimé car il est utilisé dans des commandes.");
         }
 
         _context.Fournisseurs.Remove(fournisseur);

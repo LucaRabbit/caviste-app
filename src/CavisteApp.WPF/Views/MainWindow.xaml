@@ -60,5 +60,14 @@
 
         </DockPanel>
     </Border>
+                    <Button Content="📦Commandes"
+                                Command="{Binding AfficherCommandesCommand}"
+                                Padding="10,4" Margin="0,0,8,0"/>
+                    <Button Content="📥Import vins"
+                                Command="{Binding AfficherImportCommand}"
+                                Padding="10,4" Margin="0,0,8,0"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
 
 </Window>

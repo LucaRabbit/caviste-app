@@ -19,7 +19,9 @@
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
             <conv:InverseBoolConverter x:Key="InverseBool"/>
             <conv:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBool"/>
-            <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <conv:StatutDisplayConverter x:Key="StatutDisplay"/>
+            <conv:NullToVisibilityConverter x:Key="NullToVisibility"/>
+
             <DataTemplate DataType="{x:Type vm:VinsViewModel}">
                 <vw:VinsView/>
             </DataTemplate>
@@ -34,12 +36,33 @@
             <DataTemplate DataType="{x:Type editing:FournisseurEditViewModel}">
                 <editingViews:FournisseurEditView/>
             </DataTemplate>
-            <!-- Ajoute ici les futurs mappings :
+
             <DataTemplate DataType="{x:Type vm:ClientsViewModel}">
                 <vw:ClientsView/>
             </DataTemplate>
-            -->
-            
+
+            <DataTemplate DataType="{x:Type editing:ClientEditViewModel}">
+                <editingViews:ClientEditView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:VentesViewModel}">
+                <vw:VentesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:NouvelleVenteViewModel}">
+                <vw:NouvelleVenteView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:CommandesViewModel}">
+                <vw:CommandesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:NouvelleCommandeViewModel}">
+                <vw:NouvelleCommandeView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:ImportVinsViewModel}">
+                <vw:ImportVinsView/>
+            </DataTemplate>
+
         </ResourceDictionary>
         
 
