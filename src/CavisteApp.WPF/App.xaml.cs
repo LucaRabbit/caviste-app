@@ -88,6 +88,10 @@ public partial class App : Application
         services.AddHttpClient<ICommandesApiClient, CommandesApiClient>(c => c.BaseAddress = new Uri(apiBaseUrl))
         .AddHttpMessageHandler<AuthHttpHandler>();
 
+        // CLient pour les opérations d'import, avec injection automatique du token JWT via AuthHttpHandler
+        services.AddHttpClient<IImportApiClient, ImportApiClient>(c => c.BaseAddress = new Uri(apiBaseUrl))
+                .AddHttpMessageHandler<AuthHttpHandler>();
+
         // ViewModels (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginViewModel>();
         services.AddTransient<VinsViewModel>();
@@ -96,6 +100,7 @@ public partial class App : Application
         services.AddTransient<ClientsViewModel>();
         services.AddTransient<NouvelleVenteViewModel>();
         services.AddTransient<NouvelleCommandeViewModel>();
+        services.AddTransient<ImportVinsViewModel>();
 
         // Vues (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginWindow>();
@@ -111,6 +116,7 @@ public partial class App : Application
         services.AddTransient<NouvelleVenteView>();
         services.AddTransient<CommandesView>();
         services.AddTransient<NouvelleCommandeView>();
+        services.AddTransient<ImportVinsView>();
 
     }
 }

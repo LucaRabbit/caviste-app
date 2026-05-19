@@ -27,6 +27,8 @@ public class MainViewModel : ViewModelBase
         AfficherVentesCommand = new RelayNavCommand(
             () => CurrentViewModel = CreerVentesViewModel());
         AfficherCommandesCommand = new RelayNavCommand(() => CurrentViewModel = CreerCommandesViewModel());
+        AfficherImportCommand = new RelayNavCommand(
+            () => CurrentViewModel = _services.GetRequiredService<ImportVinsViewModel>());
     }
 
     public ViewModelBase? CurrentViewModel
@@ -63,4 +65,5 @@ public class MainViewModel : ViewModelBase
     public ICommand AfficherClientsCommand { get; }
     public ICommand AfficherVentesCommand { get; }
     public ICommand AfficherCommandesCommand { get; }
+    public ICommand AfficherImportCommand { get; }
 }
