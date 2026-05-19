@@ -1,0 +1,55 @@
+﻿<Window x:Class="CavisteApp.WPF.Views.AjusterStockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Titre}"
+        Width="400" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <DockPanel Margin="20">
+
+        <!-- Boutons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Annuler" Command="{Binding AnnulerCommand}"
+                    IsCancel="True" MinWidth="80" Margin="0,0,8,0"/>
+            <Button Content="Enregistrer" Command="{Binding EnregistrerCommand}"
+                    IsDefault="True" MinWidth="100"/>
+        </StackPanel>
+
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageErreur}"
+                   Foreground="Red" Margin="0,10,0,0" TextWrapping="Wrap"/>
+
+        <StackPanel>
+            <TextBlock Text="{Binding Titre}" FontSize="16" FontWeight="Bold" Margin="0,0,0,15"/>
+
+            <TextBlock>
+                <Run Text="Stock actuel : " FontWeight="Bold"/>
+                <Run Text="{Binding StockActuel, Mode=OneWay}"/>
+            </TextBlock>
+
+            <!-- Champs Inventaire -->
+            <StackPanel Margin="0,15,0,0"
+                        Visibility="{Binding EstInventaire, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="Stock réel constaté"/>
+                <TextBox Text="{Binding StockReelTexte, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+            </StackPanel>
+
+            <!-- Champs Retrait -->
+            <StackPanel Margin="0,15,0,0"
+                        Visibility="{Binding EstRetrait, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="Quantité à retirer"/>
+                <TextBox Text="{Binding QuantiteRetraitTexte, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Motif"/>
+                <ComboBox ItemsSource="{Binding MotifsDisponibles}"
+                          SelectedItem="{Binding Motif}"
+                          Margin="0,0,0,10"/>
+            </StackPanel>
+
+            <!-- Commentaire commun -->
+            <TextBlock Text="Commentaire (optionnel)"/>
+            <TextBox Text="{Binding Commentaire, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True" TextWrapping="Wrap" Height="60"/>
+        </StackPanel>
+    </DockPanel>
+</Window>
