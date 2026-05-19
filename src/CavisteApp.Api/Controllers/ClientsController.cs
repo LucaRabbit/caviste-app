@@ -104,6 +104,14 @@ namespace CavisteApp.Api.Controllers
                 return NotFound($"Le client avec Id '{id}' n'existe pas.");
             }
 
+            var estUtilise = await _context.Set<Vente>().AnyAsync(li => li.ClientId == id);
+
+            // Si le fournisseur est utilisé dans des lignes de commande, empêcher la suppression
+            if (estUtilise)
+            {
+                return Conflict($"Le client avec Id '{id}' ne peut pas être supprimé car il est utilisé dans des ventes.");
+            }
+
             _context.Clients.Remove(client);
             await _context.SaveChangesAsync();
 

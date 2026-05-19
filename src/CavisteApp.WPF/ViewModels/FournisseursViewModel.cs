@@ -121,6 +121,10 @@ public class FournisseursViewModel : ViewModelBase
             Fournisseurs.Remove(FournisseurSelectionne);
             FournisseurSelectionne = null;
         }
+        catch (HttpRequestException ex) when (ex.Message.Contains("409"))
+        {
+            ApiErrorHelper.AfficherErreur(ex, "Suppression impossible");
+        }
         catch (HttpRequestException ex) when (ex.Message.Contains("403"))
         {
             MessageErreur = "Action réservée à l'administrateur.";

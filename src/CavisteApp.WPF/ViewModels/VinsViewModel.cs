@@ -122,6 +122,10 @@ public class VinsViewModel : ViewModelBase
             Vins.Remove(VinSelectionne);
             VinSelectionne = null;
         }
+        catch (HttpRequestException ex) when (ex.Message.Contains("409"))
+        {
+            ApiErrorHelper.AfficherErreur(ex, "Suppression impossible");
+        }
         catch (HttpRequestException ex) when (ex.Message.Contains("403"))
         {
             MessageErreur = "Action réservée à l'administrateur.";
