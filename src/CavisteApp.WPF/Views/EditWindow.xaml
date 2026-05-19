@@ -4,45 +4,50 @@
         Title="{Binding Titre}"
         Width="400" SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
-    <DockPanel Margin="20">
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent">
+    <Border CornerRadius="20" Background="#DDE6ED">
+        <DockPanel Margin="20">
 
-        <!-- Boutons en bas -->
-        <StackPanel DockPanel.Dock="Bottom" 
+            <!-- Boutons en bas -->
+            <StackPanel DockPanel.Dock="Bottom" 
                     Orientation="Horizontal"
                     HorizontalAlignment="Right" 
                     Margin="0,15,0,0">
-            
-            <Button Content="Annuler"
+
+                <Button Content="Annuler"
                     Click="BtnAnnuler_Click"
                     IsCancel="True" 
                     MinWidth="80" 
                     Margin="0,0,8,0"/>
 
-            <Button Content="Enregistrer" 
+                <Button Content="Enregistrer" 
                     Click="BtnEnregistrer_Click" 
                     IsDefault="True" 
                     MinWidth="100">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding EnregistrementEnCours}" Value="True">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding EstValide}" Value="False">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-        </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EnregistrementEnCours}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding EstValide}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
 
-        <!-- Erreur -->
-        <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageErreur}"
+            <!-- Erreur -->
+            <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageErreur}"
                    Foreground="Red" Margin="0,10,0,0" TextWrapping="Wrap"/>
 
-        <!-- Contenu : le DataTemplate résout le ViewModel courant en sa Vue -->
-        <ContentControl Content="{Binding}"/>
-    </DockPanel>
+            <!-- Contenu : le DataTemplate résout le ViewModel courant en sa Vue -->
+            <ContentControl Content="{Binding}"/>
+        </DockPanel>
+    </Border>
 </Window>

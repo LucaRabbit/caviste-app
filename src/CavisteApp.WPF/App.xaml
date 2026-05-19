@@ -6,6 +6,7 @@
              xmlns:conv="clr-namespace:CavisteApp.WPF.Converters"
              xmlns:editing="clr-namespace:CavisteApp.WPF.ViewModels.Editing"
              xmlns:editingViews="clr-namespace:CavisteApp.WPF.Views.Editing"
+             
              >
     
     <Application.Resources>
@@ -19,6 +20,7 @@
             <conv:InverseBoolConverter x:Key="InverseBool"/>
             <conv:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBool"/>
             <conv:StatutDisplayConverter x:Key="StatutDisplay"/>
+            <conv:NullToVisibilityConverter x:Key="NullToVisibility"/>
 
             <DataTemplate DataType="{x:Type vm:VinsViewModel}">
                 <vw:VinsView/>
@@ -50,6 +52,22 @@
                 <vw:NouvelleVenteView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type vm:CommandesViewModel}">
+                <vw:CommandesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:NouvelleCommandeViewModel}">
+                <vw:NouvelleCommandeView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:ImportVinsViewModel}">
+                <vw:ImportVinsView/>
+            </DataTemplate>
+
         </ResourceDictionary>
+        
+
+            
+        
     </Application.Resources>
+    
 </Application>

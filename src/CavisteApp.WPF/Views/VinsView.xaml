@@ -8,7 +8,7 @@
             <Button Content="Charger"
                     Command="{Binding ChargerCommand}"
                     Padding="10,4" Margin="0,0,8,0"/>
-            
+
             <Button Content="Ajouter"
                     Command="{Binding AjouterCommand}"
                     Padding="10,4" Margin="0,0,8,0"
@@ -20,18 +20,35 @@
                     Padding="10,4" Margin="0,0,8,0"
                     Visibility="{Binding EstAdministrateur,
                                  Converter={StaticResource BoolToVisibility}}"/>
-
+            
             <Button Content="Supprimer"
                     Command="{Binding SupprimerCommand}"
                     Padding="10,4" Margin="0,0,8,0"
                     Visibility="{Binding EstAdministrateur,
                                  Converter={StaticResource BoolToVisibility}}"/>
 
+
+            <Button Content="Inventaire" Command="{Binding InventaireCommand}" 
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur, Converter={StaticResource BoolToVisibility}}"/>
+           
+            <Button Content="Retrait stock" Command="{Binding RetraitCommand}" 
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur, Converter={StaticResource BoolToVisibility}}"/>
+
             <TextBlock Text="Chargement..."
                        VerticalAlignment="Center"
                        Margin="10,0,0,0"
                        Visibility="{Binding EnChargement,
                                     Converter={StaticResource BoolToVisibility}}"/>
+            
+            <TextBlock VerticalAlignment="Center" Margin="15,0,0,0"
+                       Foreground="#C0392B" FontWeight="Bold"
+                       Visibility="{Binding ANbStockBas, Converter={StaticResource BoolToVisibility}}">
+                        <Run Text="⚠"/>
+                        <Run Text="{Binding NbStockBas, Mode=OneWay}"/>
+                        <Run Text="vin(s) en stock bas"/>
+            </TextBlock>
         </StackPanel>
 
         <!-- Message d'erreur -->
@@ -61,15 +78,31 @@
                   SelectionMode="Single"
                   HeadersVisibility="Column"
                   GridLinesVisibility="Horizontal">
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding EnStockBas}" Value="True">
+                            <Setter Property="Background" Value="#FFF5E0"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding EnRupture}" Value="True">
+                            <Setter Property="Background" Value="#FFE4E4"/>
+                            <Setter Property="Foreground" Value="#C0392B"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id"       Binding="{Binding Id}"        Width="60"/>
-                <DataGridTextColumn Header="Nom"      Binding="{Binding Nom}"       Width="*"/>
-                <DataGridTextColumn Header="CreatedDate" Binding="{Binding CreatedDate}" Width="100"/>
-                <DataGridTextColumn Header="Prix"     Binding="{Binding Prix, StringFormat=C}" Width="100"/>
-                <DataGridTextColumn Header="Stock"    Binding="{Binding Stock}"     Width="80"/>
-                <DataGridTextColumn Header="SeuilStockBas"    Binding="{Binding SeuilStockBas}"     Width="80"/>
-                <DataGridTextColumn Header="Type"    Binding="{Binding Type}"     Width="80"/>
+                <DataGridTextColumn Header="Id"            Binding="{Binding Id}"                   Width="60"/>
+                <DataGridTextColumn Header="Nom"           Binding="{Binding Nom}"                  Width="*"/>
+                <DataGridTextColumn Header="CreatedDate"   Binding="{Binding CreatedDate}"          Width="100"/>
+                <DataGridTextColumn Header="Prix"          Binding="{Binding Prix, StringFormat=C}" Width="100"/>
+                <DataGridTextColumn Header="Stock"         Binding="{Binding Stock}"                Width="80"/>
+                <DataGridTextColumn Header="SeuilStockBas" Binding="{Binding SeuilStockBas}"        Width="80"/>
+                <DataGridTextColumn Header="Type"          Binding="{Binding Type}"                 Width="80"/>
             </DataGrid.Columns>
+
         </DataGrid>
 
     </DockPanel>

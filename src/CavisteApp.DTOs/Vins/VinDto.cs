@@ -15,5 +15,8 @@ namespace CavisteApp.DTOs.Vins
         public int Stock { get; set; }
         public int SeuilStockBas { get; set; }
         public TypeVin Type { get; set; }
+        public bool EnStockBas => Stock > 0 && Stock <= SeuilStockBas;
+        public bool EnRupture => Stock == 0;
+
     }
 }

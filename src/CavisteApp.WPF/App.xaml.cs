@@ -17,10 +17,40 @@ public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
     public static IConfiguration Configuration { get; private set; } = null!;
+    public static Window? MainAppWindow { get; set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+
+        // Handler global pour voir les exceptions
+        DispatcherUnhandledException += (s, args) =>
+        {
+            MessageBox.Show(
+                $"Erreur non gérée :\n\n{args.Exception}",
+                "Crash",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            args.Handled = true;   // empêcher le crash
+        };
+
+        AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+        {
+            if (args.ExceptionObject is Exception ex)
+            {
+                Current?.Dispatcher.Invoke(() =>
+                    MessageBox.Show($"Exception terminale :\n\n{ex}", "Crash fatal"));
+            }
+        };
+
+        TaskScheduler.UnobservedTaskException += (s, args) =>
+        {
+            Current?.Dispatcher.Invoke(() =>
+                MessageBox.Show($"Exception async non observée :\n\n{args.Exception}", "Crash async"));
+            args.SetObserved();
+        };
+
 
         // Configuration
         var builder = new ConfigurationBuilder()
@@ -40,6 +70,13 @@ public partial class App : Application
         var loginWindow = Services.GetRequiredService<LoginWindow>();
         loginWindow.Show();
     }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        (Services as IDisposable)?.Dispose();
+        base.OnExit(e);
+    }
+
 
     private void ConfigureServices(IServiceCollection services)
     {
@@ -68,7 +105,8 @@ public partial class App : Application
         services.AddHttpClient<IFournisseursApiClient, FournisseursApiClient>(c =>
         {
             c.BaseAddress = new Uri(apiBaseUrl);
-        }) .AddHttpMessageHandler<AuthHttpHandler>();
+        }) 
+        .AddHttpMessageHandler<AuthHttpHandler>();
 
         // Client pour les opérations sur les clients, avec injection automatique du token JWT via AuthHttpHandler
         services.AddHttpClient<IClientsApiClient, ClientsApiClient>(c =>
@@ -84,6 +122,14 @@ public partial class App : Application
         })
         .AddHttpMessageHandler<AuthHttpHandler>();
 
+        // Client pour les opérations sur les commandes, avec injection automatique du token JWT via AuthHttpHandler
+        services.AddHttpClient<ICommandesApiClient, CommandesApiClient>(c => c.BaseAddress = new Uri(apiBaseUrl))
+        .AddHttpMessageHandler<AuthHttpHandler>();
+
+        // CLient pour les opérations d'import, avec injection automatique du token JWT via AuthHttpHandler
+        services.AddHttpClient<IImportApiClient, ImportApiClient>(c => c.BaseAddress = new Uri(apiBaseUrl))
+                .AddHttpMessageHandler<AuthHttpHandler>();
+
         // ViewModels (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginViewModel>();
         services.AddTransient<VinsViewModel>();
@@ -91,6 +137,8 @@ public partial class App : Application
         services.AddTransient<FournisseursViewModel>();
         services.AddTransient<ClientsViewModel>();
         services.AddTransient<NouvelleVenteViewModel>();
+        services.AddTransient<NouvelleCommandeViewModel>();
+        services.AddTransient<ImportVinsViewModel>();
 
         // Vues (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginWindow>();
@@ -104,6 +152,9 @@ public partial class App : Application
         services.AddTransient<ClientEditView>();
         services.AddTransient<VentesView>();
         services.AddTransient<NouvelleVenteView>();
+        services.AddTransient<CommandesView>();
+        services.AddTransient<NouvelleCommandeView>();
+        services.AddTransient<ImportVinsView>();
 
     }
 }

@@ -19,6 +19,10 @@ public class VinsViewModel : ViewModelBase
     private VinDto? _vinSelectionne;
     private string _messageErreur = string.Empty;
 
+
+    public int NbStockBas => Vins.Count(v => v.EnStockBas || v.EnRupture);
+    public bool ANbStockBas => NbStockBas > 0;
+
     public VinsViewModel(IVinsApiClient vinsApi, SessionService session)
     {
         _vinsApi = vinsApi;
@@ -31,6 +35,10 @@ public class VinsViewModel : ViewModelBase
         ModifierCommand = new RelayNavCommand(Modifier,
                                 () => VinSelectionne is not null && EstAdministrateur);
         SupprimerCommand = new RelayCommand(SupprimerAsync,
+                                () => VinSelectionne is not null && EstAdministrateur);
+        InventaireCommand = new RelayNavCommand(() => OuvrirAjustement(ModeAjustement.Inventaire),
+                                () => VinSelectionne is not null && EstAdministrateur);
+        RetraitCommand = new RelayNavCommand(() => OuvrirAjustement(ModeAjustement.Retrait),
                                 () => VinSelectionne is not null && EstAdministrateur);
 
 
@@ -51,6 +59,8 @@ public class VinsViewModel : ViewModelBase
             {
                 (ModifierCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
                 (SupprimerCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                (InventaireCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
+                (RetraitCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
             }
         }
     }
@@ -75,6 +85,8 @@ public class VinsViewModel : ViewModelBase
     public ICommand AjouterCommand { get; }
     public ICommand ModifierCommand { get; }
     public ICommand SupprimerCommand { get; }
+    public ICommand InventaireCommand { get; }
+    public ICommand RetraitCommand { get; }
 
     // ─── Logique ────────────────────────────────────────────────
 
@@ -89,6 +101,9 @@ public class VinsViewModel : ViewModelBase
 
             Vins.Clear();
             foreach (var v in vins) Vins.Add(v);
+
+            OnPropertyChanged(nameof(NbStockBas));
+            OnPropertyChanged(nameof(ANbStockBas));
         }
         catch (HttpRequestException ex)
         {
@@ -121,6 +136,10 @@ public class VinsViewModel : ViewModelBase
             await _vinsApi.SupprimerAsync(VinSelectionne.Id);
             Vins.Remove(VinSelectionne);
             VinSelectionne = null;
+        }
+        catch (HttpRequestException ex) when (ex.Message.Contains("409"))
+        {
+            ApiErrorHelper.AfficherErreur(ex, "Suppression impossible");
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("403"))
         {
@@ -159,9 +178,23 @@ public class VinsViewModel : ViewModelBase
     {
         var window = new EditWindow(vm)
         {
-            Owner = Application.Current.MainWindow
+            Owner = App.MainAppWindow
         };
         return window.ShowDialog() == true;
+    }
+
+    private void OuvrirAjustement(ModeAjustement mode)
+    {
+        if (VinSelectionne is null) return;
+
+        var vm = new AjusterStockViewModel(_vinsApi, VinSelectionne, mode);
+        var window = new AjusterStockWindow(vm) { Owner = App.MainAppWindow };
+
+        if (window.ShowDialog() == true)
+        {
+            // Recharge pour avoir le nouveau stock
+            _ = ChargerAsync();
+        }
     }
 
 }
