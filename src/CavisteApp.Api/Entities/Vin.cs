@@ -19,7 +19,7 @@ public class Vin
     [Required]
     public int SeuilStockBas { get; set; } = 5;
     [Required]
-    public DateTime DateCreation { get; set; } = DateTime.UtcNow;
+    public DateTime DateCreation { get; set; } = DateTime.Now;
 
     public string? SourceExterneId { get; set; } // pour idempotence lors d'import depuis API externe
 

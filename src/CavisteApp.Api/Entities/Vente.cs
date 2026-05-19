@@ -5,7 +5,7 @@ namespace CavisteApp.Api.Entities;
 public class Vente
 {
     public int Id { get; set; }
-    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public DateTime Date { get; set; } = DateTime.Now;
     public decimal MontantTotal { get; set; }
 
     public StatutVente Statut { get; set; } = StatutVente.Brouillon;

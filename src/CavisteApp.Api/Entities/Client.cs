@@ -26,7 +26,7 @@ public class Client
     [Required]
     public string Ville { get; set; } = string.Empty;
     [Required]
-    public DateTime DateCreation { get; set; } = DateTime.UtcNow;
+    public DateTime DateCreation { get; set; } = DateTime.Now;
 
     [JsonIgnore]
     public ICollection<Vente> Ventes { get; set; } = new List<Vente>();
