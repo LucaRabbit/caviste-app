@@ -32,6 +32,10 @@ public class VinsViewModel : ViewModelBase
                                 () => VinSelectionne is not null && EstAdministrateur);
         SupprimerCommand = new RelayCommand(SupprimerAsync,
                                 () => VinSelectionne is not null && EstAdministrateur);
+        InventaireCommand = new RelayNavCommand(() => OuvrirAjustement(ModeAjustement.Inventaire),
+                                () => VinSelectionne is not null && EstAdministrateur);
+        RetraitCommand = new RelayNavCommand(() => OuvrirAjustement(ModeAjustement.Retrait),
+                                () => VinSelectionne is not null && EstAdministrateur);
 
 
         // Lancer le chargement en arrière-plan
@@ -51,6 +55,8 @@ public class VinsViewModel : ViewModelBase
             {
                 (ModifierCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
                 (SupprimerCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                (InventaireCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
+                (RetraitCommand as RelayNavCommand)?.RaiseCanExecuteChanged();
             }
         }
     }
@@ -75,6 +81,8 @@ public class VinsViewModel : ViewModelBase
     public ICommand AjouterCommand { get; }
     public ICommand ModifierCommand { get; }
     public ICommand SupprimerCommand { get; }
+    public ICommand InventaireCommand { get; }
+    public ICommand RetraitCommand { get; }
 
     // ─── Logique ────────────────────────────────────────────────
 
@@ -166,6 +174,20 @@ public class VinsViewModel : ViewModelBase
             Owner = Application.Current.MainWindow
         };
         return window.ShowDialog() == true;
+    }
+
+    private void OuvrirAjustement(ModeAjustement mode)
+    {
+        if (VinSelectionne is null) return;
+
+        var vm = new AjusterStockViewModel(_vinsApi, VinSelectionne, mode);
+        var window = new AjusterStockWindow(vm) { Owner = Application.Current.MainWindow };
+
+        if (window.ShowDialog() == true)
+        {
+            // Recharge pour avoir le nouveau stock
+            _ = ChargerAsync();
+        }
     }
 
 }

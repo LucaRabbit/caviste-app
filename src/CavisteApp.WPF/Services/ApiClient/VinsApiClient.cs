@@ -43,7 +43,13 @@ public class VinsApiClient : IVinsApiClient
     public async Task AjusterStockAsync(int id, InventaireDto request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync($"api/vins/{id}/inventaire", request, JsonOptions.Default, ct);
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessOrThrowAsync(response, ct);
+    }
+
+    public async Task RetirerStockAsync(int id, RetraitStockDto request, CancellationToken ct = default)
+    {
+        var response = await _http.PostAsJsonAsync($"api/vins/{id}/retrait", request, JsonOptions.Default, ct);
+        await EnsureSuccessOrThrowAsync(response, ct);
     }
 
     public async Task SupprimerAsync(int id, CancellationToken ct = default)

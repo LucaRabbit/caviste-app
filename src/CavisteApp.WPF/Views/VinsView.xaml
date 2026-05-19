@@ -27,6 +27,14 @@
                     Visibility="{Binding EstAdministrateur,
                                  Converter={StaticResource BoolToVisibility}}"/>
 
+            <Button Content="Inventaire" Command="{Binding InventaireCommand}" 
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur, Converter={StaticResource BoolToVisibility}}"/>
+           
+            <Button Content="Retrait stock" Command="{Binding RetraitCommand}" 
+                    Padding="10,4" Margin="0,0,8,0"
+                    Visibility="{Binding EstAdministrateur, Converter={StaticResource BoolToVisibility}}"/>
+
             <TextBlock Text="Chargement..."
                        VerticalAlignment="Center"
                        Margin="10,0,0,0"
