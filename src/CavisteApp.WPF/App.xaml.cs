@@ -84,6 +84,10 @@ public partial class App : Application
         })
         .AddHttpMessageHandler<AuthHttpHandler>();
 
+        // Client pour les opérations sur les commandes, avec injection automatique du token JWT via AuthHttpHandler
+        services.AddHttpClient<ICommandesApiClient, CommandesApiClient>(c => c.BaseAddress = new Uri(apiBaseUrl))
+        .AddHttpMessageHandler<AuthHttpHandler>();
+
         // ViewModels (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginViewModel>();
         services.AddTransient<VinsViewModel>();
@@ -91,6 +95,7 @@ public partial class App : Application
         services.AddTransient<FournisseursViewModel>();
         services.AddTransient<ClientsViewModel>();
         services.AddTransient<NouvelleVenteViewModel>();
+        services.AddTransient<NouvelleCommandeViewModel>();
 
         // Vues (transient pour créer une nouvelle instance à chaque fois)
         services.AddTransient<LoginWindow>();
@@ -104,6 +109,8 @@ public partial class App : Application
         services.AddTransient<ClientEditView>();
         services.AddTransient<VentesView>();
         services.AddTransient<NouvelleVenteView>();
+        services.AddTransient<CommandesView>();
+        services.AddTransient<NouvelleCommandeView>();
 
     }
 }

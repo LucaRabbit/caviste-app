@@ -19,6 +19,7 @@
             <conv:InverseBoolConverter x:Key="InverseBool"/>
             <conv:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBool"/>
             <conv:StatutDisplayConverter x:Key="StatutDisplay"/>
+            <conv:NullToVisibilityConverter x:Key="NullToVisibility"/>
 
             <DataTemplate DataType="{x:Type vm:VinsViewModel}">
                 <vw:VinsView/>
@@ -48,6 +49,13 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:NouvelleVenteViewModel}">
                 <vw:NouvelleVenteView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:CommandesViewModel}">
+                <vw:CommandesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:NouvelleCommandeViewModel}">
+                <vw:NouvelleCommandeView/>
             </DataTemplate>
 
         </ResourceDictionary>
