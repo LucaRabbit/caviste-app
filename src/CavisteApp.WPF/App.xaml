@@ -6,6 +6,7 @@
              xmlns:conv="clr-namespace:CavisteApp.WPF.Converters"
              xmlns:editing="clr-namespace:CavisteApp.WPF.ViewModels.Editing"
              xmlns:editingViews="clr-namespace:CavisteApp.WPF.Views.Editing"
+             
              >
     
     <Application.Resources>
@@ -18,7 +19,7 @@
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
             <conv:InverseBoolConverter x:Key="InverseBool"/>
             <conv:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBool"/>
-
+            <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
             <DataTemplate DataType="{x:Type vm:VinsViewModel}">
                 <vw:VinsView/>
             </DataTemplate>
@@ -38,6 +39,12 @@
                 <vw:ClientsView/>
             </DataTemplate>
             -->
+            
         </ResourceDictionary>
+        
+
+            
+        
     </Application.Resources>
+    
 </Application>

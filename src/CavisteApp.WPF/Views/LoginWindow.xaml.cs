@@ -35,5 +35,6 @@ public partial class LoginWindow : Window
         mainWindow.Show();
         Close();
     }
+
 }
 

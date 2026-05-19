@@ -8,7 +8,7 @@
             <Button Content="Charger"
                     Command="{Binding ChargerCommand}"
                     Padding="10,4" Margin="0,0,8,0"/>
-            
+
             <Button Content="Ajouter"
                     Command="{Binding AjouterCommand}"
                     Padding="10,4" Margin="0,0,8,0"
@@ -61,15 +61,27 @@
                   SelectionMode="Single"
                   HeadersVisibility="Column"
                   GridLinesVisibility="Horizontal">
+
+            <DataGrid.Resources>
+                <Style x:Key="CellRouge" TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=DataContext.StockSousSeuil}" Value="True">
+                            <Setter Property="Foreground" Value="Red"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id"       Binding="{Binding Id}"        Width="60"/>
-                <DataGridTextColumn Header="Nom"      Binding="{Binding Nom}"       Width="*"/>
-                <DataGridTextColumn Header="CreatedDate" Binding="{Binding CreatedDate}" Width="100"/>
-                <DataGridTextColumn Header="Prix"     Binding="{Binding Prix, StringFormat=C}" Width="100"/>
-                <DataGridTextColumn Header="Stock"    Binding="{Binding Stock}"     Width="80"/>
-                <DataGridTextColumn Header="SeuilStockBas"    Binding="{Binding SeuilStockBas}"     Width="80"/>
-                <DataGridTextColumn Header="Type"    Binding="{Binding Type}"     Width="80"/>
+                <DataGridTextColumn Header="Id"            Binding="{Binding Id}"                   Width="60"  ElementStyle="{StaticResource CellRouge}"/>
+                <DataGridTextColumn Header="Nom"           Binding="{Binding Nom}"                  Width="*"   ElementStyle="{StaticResource CellRouge}"/>
+                <DataGridTextColumn Header="CreatedDate"   Binding="{Binding CreatedDate}"          Width="100" ElementStyle="{StaticResource CellRouge}"/>
+                <DataGridTextColumn Header="Prix"          Binding="{Binding Prix, StringFormat=C}" Width="100" ElementStyle="{StaticResource CellRouge}"/>
+                <DataGridTextColumn Header="Stock"         Binding="{Binding Stock}"                Width="80"  ElementStyle="{StaticResource CellRouge}"/>
+                <DataGridTextColumn Header="SeuilStockBas" Binding="{Binding SeuilStockBas}"        Width="80"  ElementStyle="{StaticResource CellRouge}"/>
+                <DataGridTextColumn Header="Type"          Binding="{Binding Type}"                 Width="80"  ElementStyle="{StaticResource CellRouge}"/>
             </DataGrid.Columns>
+
         </DataGrid>
 
     </DockPanel>

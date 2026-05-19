@@ -1,46 +1,64 @@
 ﻿<Window x:Class="CavisteApp.WPF.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="clr-namespace:CavisteApp.WPF.Views.Control"
         Title="Caviste" Height="600" Width="900"
         Background="Transparent"
         WindowStyle="None"
         AllowsTransparency="True">
+
     <Border CornerRadius="20" Background="#DDE6ED" Padding="0">
         <DockPanel>
-        <!-- Barre de navigation -->
-        <Border DockPanel.Dock="Top" Background="#27374D" Padding="10">
-            <DockPanel>
-                <Button Content="Déconnexion"
-                        DockPanel.Dock="Right"
-                        Click="BtnDeconnexion_Click"
-                        Padding="10,4"/>
-                
-                <TextBlock Text="{Binding MessageBienvenue}"
-                           VerticalAlignment="Center"
-                           FontWeight="Bold"
-                           Foreground="White"
-                           DockPanel.Dock="Right"/>
 
-                <StackPanel Orientation="Horizontal" Margin="20,0">
-                    <Button Content="🍷Vins"
-                            Command="{Binding AfficherVinsCommand}"
-                            Padding="10,4" Margin="0,0,8,0"/>
-                    <Button Content="🍇Fournisseurs"
-                            Command="{Binding AfficherFournisseursCommand}"
-                            Padding="10,4" Margin="0,0,8,0"/>
-                    <Button Content="🤝Clients"
+            <Border DockPanel.Dock="Top" Background="#27374D" Padding="10">
+                <DockPanel>
+                    <Button Content="Déconnexion"
+                            DockPanel.Dock="Right"
+                            Click="BtnDeconnexion_Click"
+                            Padding="10,4"/>
+                    <TextBlock Text="{Binding MessageBienvenue}"
+                               VerticalAlignment="Center"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               DockPanel.Dock="Right"/>
+                    <StackPanel Orientation="Horizontal" Margin="20,0">
+                        <Button Content="🍷Vins"
+                                Command="{Binding AfficherVinsCommand}"
+                                Padding="10,4" Margin="0,0,8,0"/>
+                        <Button Content="🍇Fournisseurs"
+                                Command="{Binding AfficherFournisseursCommand}"
+                                Padding="10,4" Margin="0,0,8,0"/>
+                        <Button Content="🤝Clients"
                                 Command="{Binding AfficherClientsCommand}"
                                 Padding="10,4" Margin="0,0,8,0"/>
-                    <Button Content="🛒Ventes"
+                        <Button Content="🛒Ventes"
                                 Command="{Binding AfficherVentesCommand}"
                                 Padding="10,4" Margin="0,0,8,0"/>
-                    
-                </StackPanel>
-            </DockPanel>
-        </Border>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
 
-        <!-- Zone qui affiche la vue courante (résolue via DataTemplate) -->
-        <ContentControl Content="{Binding CurrentViewModel}" Margin="10"/>
-    </DockPanel>
-        </Border>
+            <!-- AVANT -->
+            <ContentControl Content="{Binding CurrentViewModel}" Margin="10"/>
+
+            <!-- APRÈS -->
+            <Grid>
+                <ctrl:PrintPressControl>
+                    <ctrl:PrintPressControl.Style>
+                        <Style TargetType="ctrl:PrintPressControl">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewModel}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ctrl:PrintPressControl.Style>
+                </ctrl:PrintPressControl>
+                <ContentControl Content="{Binding CurrentViewModel}" Margin="10"/>
+            </Grid>
+
+        </DockPanel>
+    </Border>
+
 </Window>
