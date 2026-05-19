@@ -63,31 +63,15 @@ public class CommandesController : ControllerBase
         var commande = await _context.Commandes
             .Include(c => c.Fournisseur)
             .Include(c => c.Lignes)
-            .Where(c => c.Id == id)
-            .Select(c => new CommandeDto
-            {
-                Id = c.Id,
-                DateCreation = c.DateCreation,
-                DateValidation = c.DateValidation,
-                DateReception = c.DateReception,
-                Statut = c.Statut,
-                FournisseurNom = c.Fournisseur.Nom,
-                FournisseurId = c.Fournisseur.Id,
-                Lignes = c.Lignes.Select(l => new LigneCommandeDto
-                {
-                    Id = l.Id,
-                    VinId = l.VinId,
-                    VinNom = l.VinNom,
-                    Quantite = l.Quantite,
-                }).ToList()
-            })
-            .FirstOrDefaultAsync();
+                .ThenInclude(l => l.Vin)
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         if (commande == null)
         {
             return NotFound($"La commande avec Id '{id}' n'existe pas.");
         }
-        return Ok(commande);
+
+        return Ok(MapToDto(commande));
     }
 
     [HttpPost]
@@ -125,10 +109,15 @@ public class CommandesController : ControllerBase
             DateCreation = DateTime.UtcNow,
             Statut = StatutCommande.Brouillon,
             FournisseurId = request.FournisseurId,
-            Lignes = request.Lignes.Select(l => new LigneCommande
+            Lignes = request.Lignes.Select(l =>
             {
-                VinId = l.VinId,
-                Quantite = l.Quantite
+                var vin = vins[l.VinId];
+                return new LigneCommande
+                {
+                    VinId = vin.Id,
+                    VinNom = vin.Nom,
+                    Quantite = l.Quantite
+                };
             }).ToList()
         };
 
@@ -217,10 +206,9 @@ public class CommandesController : ControllerBase
                 // Nouvelle ligne
                 commande.Lignes.Add(new LigneCommande
                 {
-                    VinId = ligneDto.VinId,
+                    VinId = vin.Id,
                     VinNom = vin.Nom,
-                    VinType = vin.Type,
-                    Quantite = ligneDto.Quantite,
+                    Quantite = ligneDto.Quantite
                 });
             }
         }
