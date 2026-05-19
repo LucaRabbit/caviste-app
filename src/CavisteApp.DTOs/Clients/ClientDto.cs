@@ -17,6 +17,6 @@ namespace CavisteApp.DTOs.Clients
         public string NomRue { get; set; } = string.Empty;
         public string CodePostal { get; set; } = string.Empty;
         public string Ville { get; set; } = string.Empty;
-        public DateTime DateCreation { get; set; } = DateTime.UtcNow;
+        public DateTime DateCreation { get; set; } = DateTime.Now;
     }
 }
