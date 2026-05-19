@@ -26,6 +26,7 @@ public class MainViewModel : ViewModelBase
             () => CurrentViewModel = _services.GetRequiredService<ClientsViewModel>());
         AfficherVentesCommand = new RelayNavCommand(
             () => CurrentViewModel = CreerVentesViewModel());
+        AfficherCommandesCommand = new RelayNavCommand(() => CurrentViewModel = CreerCommandesViewModel());
     }
 
     public ViewModelBase? CurrentViewModel
@@ -43,6 +44,15 @@ public class MainViewModel : ViewModelBase
             vm => CurrentViewModel = vm);
     }
 
+    private CommandesViewModel CreerCommandesViewModel()
+    {
+        return new CommandesViewModel(
+            _services.GetRequiredService<ICommandesApiClient>(),
+            _services.GetRequiredService<SessionService>(),
+            () => _services.GetRequiredService<NouvelleCommandeViewModel>(),
+            vm => CurrentViewModel = vm);
+    }
+
     public string MessageBienvenue =>
         _session.Utilisateur is null
             ? string.Empty
@@ -52,4 +62,5 @@ public class MainViewModel : ViewModelBase
     public ICommand AfficherFournisseursCommand { get; }
     public ICommand AfficherClientsCommand { get; }
     public ICommand AfficherVentesCommand { get; }
+    public ICommand AfficherCommandesCommand { get; }
 }
