@@ -49,6 +49,13 @@ public class VinsApiClient : IVinsApiClient
     public async Task SupprimerAsync(int id, CancellationToken ct = default)
     {
         var response = await _http.DeleteAsync($"api/vins/{id}", ct);
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessOrThrowAsync(response, ct);
+    }
+
+    private static async Task EnsureSuccessOrThrowAsync(HttpResponseMessage response, CancellationToken ct)
+    {
+        if (response.IsSuccessStatusCode) return;
+        var body = await response.Content.ReadAsStringAsync(ct);
+        throw new HttpRequestException($"Erreur API ({(int)response.StatusCode}) : {body}");
     }
 }
