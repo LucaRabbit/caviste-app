@@ -1,4 +1,6 @@
-﻿using CavisteApp.Api.Entities;
+﻿using CavisteApp.Api.Configuration;
+using CavisteApp.Api.Entities;
+using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -7,10 +9,12 @@ namespace CavisteApp.Api.Services.QuestPDF;
 public class QuestPdfService
 {
     private readonly ILogger<QuestPdfService> _logger;
+    private readonly PdfSettings _pdfSettings;
 
-    public QuestPdfService(ILogger<QuestPdfService> logger)
+    public QuestPdfService(ILogger<QuestPdfService> logger, IOptions<PdfSettings> pdfSettings)
     {
         _logger = logger;
+        _pdfSettings = pdfSettings.Value;
     }
 
     /// <summary>
@@ -156,6 +160,16 @@ public class QuestPdfService
             _logger.LogError(ex, "Erreur lors de la génération du ticket PDF pour la vente #{VenteId}", vente.Id);
             throw;
         }
+    }
+
+    /// <summary>
+    /// Génère et sauvegarde un ticket PDF sur le disque en utilisant le chemin par défaut de la configuration
+    /// </summary>
+    /// <param name="vente">La vente à traiter</param>
+    /// <returns>Le chemin complet du fichier PDF généré</returns>
+    public string SauvegarderTicketPdf(Vente vente)
+    {
+        return SauvegarderTicketPdf(vente, _pdfSettings.TicketsFolder);
     }
 
     /// <summary>

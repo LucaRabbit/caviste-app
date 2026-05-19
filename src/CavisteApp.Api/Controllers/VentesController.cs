@@ -332,7 +332,7 @@ public class VentesController : ControllerBase
         }
 
         var pdfBytes = _pdfService.GenererTicketPdf(vente);
-        var cheminPdf = _pdfService.SauvegarderTicketPdf(vente, "C:\\Users\\lucar\\Downloads");
+        var cheminPdf = _pdfService.SauvegarderTicketPdf(vente);
 
         // Alerte de stock bas
         foreach (var (vinId, stockAvant) in stocksAvant)

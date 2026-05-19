@@ -122,6 +122,9 @@ builder.Services.Configure<MailtrapOptions>(builder.Configuration.GetSection("Ma
 builder.Services.AddScoped<IEmailService, MailtrapEmailService>();
 builder.Services.AddScoped<AlerteStockService>();
 
+// Configuration PDF
+builder.Services.Configure<PdfSettings>(builder.Configuration.GetSection("PdfSettings"));
+
 // Services QuestPDF
 builder.Services.AddScoped<QuestPdfService>();
 
