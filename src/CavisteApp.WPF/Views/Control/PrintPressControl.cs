@@ -12,7 +12,10 @@ namespace CavisteApp.WPF.Views.Control
         private double _t = 0;
         private DrawingVisual _visual;
 
-        public PrintPressControl() => InitializeComponent();
+        public PrintPressControl()
+        {
+            InitializeComponent();
+        }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {

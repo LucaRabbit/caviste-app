@@ -2,9 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ctrl="clr-namespace:CavisteApp.WPF.Views.Control"
-        Title="Caviste" Height="600" Width="900"
-        Background="Transparent"
+        Title="CavisteApp"
+        WindowState="Normal"
+        Width="1280" Height="800"
         WindowStyle="None"
+        Background="Transparent"
         AllowsTransparency="True">
 
     <Border CornerRadius="20" Background="#DDE6ED" Padding="0">
@@ -12,10 +14,37 @@
 
             <Border DockPanel.Dock="Top" Background="#27374D" Padding="10">
                 <DockPanel>
+
+                    <!-- Boutons système -->
+                    <Button DockPanel.Dock="Right"
+                            Content="✕"
+                            Width="32" Height="32"
+                            Margin="4,0,0,0"
+                            Click="BtnFermer_Click"
+                            ToolTip="Quitter"
+                            Style="{StaticResource BoutonSysteme}"/>
+                    
+                    <Button DockPanel.Dock="Right"
+                        Content="{Binding IconeMaximiser, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Width="32" Height="32"
+                        Margin="0"
+                        Click="BtnMaximiser_Click"
+                        ToolTip="Agrandir / Restaurer"
+                        Style="{StaticResource BoutonSysteme}"/>
+
+                    <Button DockPanel.Dock="Right"
+                            Content="⎯"
+                            Width="32" Height="32"
+                            Margin="0,0,4,0"
+                            Click="BtnMinimiser_Click"
+                            ToolTip="Réduire"
+                            Style="{StaticResource BoutonSysteme}"/>
+                    
                     <Button Content="Déconnexion"
                             DockPanel.Dock="Right"
                             Click="BtnDeconnexion_Click"
                             Padding="10,4"/>
+                    
                     <TextBlock Text="{Binding MessageBienvenue}"
                                VerticalAlignment="Center"
                                FontWeight="Bold"
@@ -34,14 +63,16 @@
                         <Button Content="🛒Ventes"
                                 Command="{Binding AfficherVentesCommand}"
                                 Padding="10,4" Margin="0,0,8,0"/>
+                        <Button Content="📦Commandes"
+                                Command="{Binding AfficherCommandesCommand}"
+                                Padding="10,4" Margin="0,0,8,0"/>
+                        <Button Content="📥Import vins"
+                                Command="{Binding AfficherImportCommand}"
+                                Padding="10,4" Margin="0,0,8,0"/>
                     </StackPanel>
                 </DockPanel>
             </Border>
 
-            <!-- AVANT -->
-            <ContentControl Content="{Binding CurrentViewModel}" Margin="10"/>
-
-            <!-- APRÈS -->
             <Grid>
                 <ctrl:PrintPressControl>
                     <ctrl:PrintPressControl.Style>
@@ -60,14 +91,4 @@
 
         </DockPanel>
     </Border>
-                    <Button Content="📦Commandes"
-                                Command="{Binding AfficherCommandesCommand}"
-                                Padding="10,4" Margin="0,0,8,0"/>
-                    <Button Content="📥Import vins"
-                                Command="{Binding AfficherImportCommand}"
-                                Padding="10,4" Margin="0,0,8,0"/>
-                </StackPanel>
-            </DockPanel>
-        </Border>
-
 </Window>

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using CavisteApp.WPF.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,8 +33,20 @@ public partial class LoginWindow : Window
     private void OnLoginReussi(object? sender, EventArgs e)
     {
         var mainWindow = App.Services.GetRequiredService<MainWindow>();
+        App.MainAppWindow = mainWindow;
         mainWindow.Show();
         Close();
+    }
+
+    private void BtnFermer_Click(object sender, RoutedEventArgs e)
+    {
+        Application.Current.Shutdown();
+    }
+
+    private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left)
+            DragMove();
     }
 
 }

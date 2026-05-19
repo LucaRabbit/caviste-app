@@ -40,6 +40,14 @@
                        Margin="10,0,0,0"
                        Visibility="{Binding EnChargement,
                                     Converter={StaticResource BoolToVisibility}}"/>
+            
+            <TextBlock VerticalAlignment="Center" Margin="15,0,0,0"
+                       Foreground="#C0392B" FontWeight="Bold"
+                       Visibility="{Binding ANbStockBas, Converter={StaticResource BoolToVisibility}}">
+                        <Run Text="⚠"/>
+                        <Run Text="{Binding NbStockBas, Mode=OneWay}"/>
+                        <Run Text="vin(s) en stock bas"/>
+            </TextBlock>
         </StackPanel>
 
         <!-- Message d'erreur -->
@@ -70,24 +78,28 @@
                   HeadersVisibility="Column"
                   GridLinesVisibility="Horizontal">
 
-            <DataGrid.Resources>
-                <Style x:Key="CellRouge" TargetType="TextBlock">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=DataContext.StockSousSeuil}" Value="True">
-                            <Setter Property="Foreground" Value="Red"/>
+                        <DataTrigger Binding="{Binding EnStockBas}" Value="True">
+                            <Setter Property="Background" Value="#FFF5E0"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding EnRupture}" Value="True">
+                            <Setter Property="Background" Value="#FFE4E4"/>
+                            <Setter Property="Foreground" Value="#C0392B"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </DataGrid.Resources>
+            </DataGrid.RowStyle>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id"            Binding="{Binding Id}"                   Width="60"  ElementStyle="{StaticResource CellRouge}"/>
-                <DataGridTextColumn Header="Nom"           Binding="{Binding Nom}"                  Width="*"   ElementStyle="{StaticResource CellRouge}"/>
-                <DataGridTextColumn Header="CreatedDate"   Binding="{Binding CreatedDate}"          Width="100" ElementStyle="{StaticResource CellRouge}"/>
-                <DataGridTextColumn Header="Prix"          Binding="{Binding Prix, StringFormat=C}" Width="100" ElementStyle="{StaticResource CellRouge}"/>
-                <DataGridTextColumn Header="Stock"         Binding="{Binding Stock}"                Width="80"  ElementStyle="{StaticResource CellRouge}"/>
-                <DataGridTextColumn Header="SeuilStockBas" Binding="{Binding SeuilStockBas}"        Width="80"  ElementStyle="{StaticResource CellRouge}"/>
-                <DataGridTextColumn Header="Type"          Binding="{Binding Type}"                 Width="80"  ElementStyle="{StaticResource CellRouge}"/>
+                <DataGridTextColumn Header="Id"            Binding="{Binding Id}"                   Width="60"/>
+                <DataGridTextColumn Header="Nom"           Binding="{Binding Nom}"                  Width="*"/>
+                <DataGridTextColumn Header="CreatedDate"   Binding="{Binding CreatedDate}"          Width="100"/>
+                <DataGridTextColumn Header="Prix"          Binding="{Binding Prix, StringFormat=C}" Width="100"/>
+                <DataGridTextColumn Header="Stock"         Binding="{Binding Stock}"                Width="80"/>
+                <DataGridTextColumn Header="SeuilStockBas" Binding="{Binding SeuilStockBas}"        Width="80"/>
+                <DataGridTextColumn Header="Type"          Binding="{Binding Type}"                 Width="80"/>
             </DataGrid.Columns>
 
         </DataGrid>

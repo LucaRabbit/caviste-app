@@ -19,6 +19,10 @@ public class VinsViewModel : ViewModelBase
     private VinDto? _vinSelectionne;
     private string _messageErreur = string.Empty;
 
+
+    public int NbStockBas => Vins.Count(v => v.EnStockBas || v.EnRupture);
+    public bool ANbStockBas => NbStockBas > 0;
+
     public VinsViewModel(IVinsApiClient vinsApi, SessionService session)
     {
         _vinsApi = vinsApi;
@@ -97,6 +101,9 @@ public class VinsViewModel : ViewModelBase
 
             Vins.Clear();
             foreach (var v in vins) Vins.Add(v);
+
+            OnPropertyChanged(nameof(NbStockBas));
+            OnPropertyChanged(nameof(ANbStockBas));
         }
         catch (HttpRequestException ex)
         {
@@ -171,7 +178,7 @@ public class VinsViewModel : ViewModelBase
     {
         var window = new EditWindow(vm)
         {
-            Owner = Application.Current.MainWindow
+            Owner = App.MainAppWindow
         };
         return window.ShowDialog() == true;
     }
@@ -181,7 +188,7 @@ public class VinsViewModel : ViewModelBase
         if (VinSelectionne is null) return;
 
         var vm = new AjusterStockViewModel(_vinsApi, VinSelectionne, mode);
-        var window = new AjusterStockWindow(vm) { Owner = Application.Current.MainWindow };
+        var window = new AjusterStockWindow(vm) { Owner = App.MainAppWindow };
 
         if (window.ShowDialog() == true)
         {

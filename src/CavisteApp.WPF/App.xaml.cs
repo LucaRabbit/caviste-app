@@ -17,10 +17,36 @@ public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
     public static IConfiguration Configuration { get; private set; } = null!;
+    public static Window? MainAppWindow { get; set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+
+        // Handler global pour voir les exceptions
+        DispatcherUnhandledException += (s, args) =>
+        {
+            MessageBox.Show(
+                $"Erreur non gérée :\n\n{args.Exception}",
+                "Crash",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            args.Handled = true;   // empêche le crash
+        };
+
+        AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+        {
+            if (args.ExceptionObject is Exception ex)
+                MessageBox.Show($"Exception terminale :\n\n{ex}", "Crash fatal");
+        };
+
+        TaskScheduler.UnobservedTaskException += (s, args) =>
+        {
+            MessageBox.Show($"Exception async non observée :\n\n{args.Exception}", "Crash async");
+            args.SetObserved();
+        };
+
 
         // Configuration
         var builder = new ConfigurationBuilder()

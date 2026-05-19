@@ -61,6 +61,42 @@
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
     </Style>
 
+    <!-- Boutons système (barre de titre custom) -->
+
+    <Style x:Key="BoutonSysteme" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#3D5878"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BoutonFermeture" TargetType="Button" BasedOn="{StaticResource BoutonSysteme}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#E81123"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- ─── TextBox ─────────────────────────────────────── -->
     <Style TargetType="TextBox">
         <Setter Property="Padding" Value="8,6"/>
