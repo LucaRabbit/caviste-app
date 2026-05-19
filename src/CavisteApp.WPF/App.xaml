@@ -6,6 +6,7 @@
              xmlns:conv="clr-namespace:CavisteApp.WPF.Converters"
              xmlns:editing="clr-namespace:CavisteApp.WPF.ViewModels.Editing"
              xmlns:editingViews="clr-namespace:CavisteApp.WPF.Views.Editing"
+             
              >
     
     <Application.Resources>
@@ -63,5 +64,10 @@
             </DataTemplate>
 
         </ResourceDictionary>
+        
+
+            
+        
     </Application.Resources>
+    
 </Application>

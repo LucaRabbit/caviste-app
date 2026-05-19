@@ -11,6 +11,7 @@ namespace CavisteApp.WPF.Views
     /// <summary>
     /// Logique d'interaction pour VinsView.xaml
     /// </summary>
+  
     public partial class VinsView : UserControl
     {
         public VinsView()
@@ -19,4 +20,5 @@ namespace CavisteApp.WPF.Views
             DataContext = App.Services.GetRequiredService<VinsViewModel>();
         }
     }
+
 }

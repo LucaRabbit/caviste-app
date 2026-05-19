@@ -17,10 +17,40 @@ public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
     public static IConfiguration Configuration { get; private set; } = null!;
+    public static Window? MainAppWindow { get; set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+
+        // Handler global pour voir les exceptions
+        DispatcherUnhandledException += (s, args) =>
+        {
+            MessageBox.Show(
+                $"Erreur non gérée :\n\n{args.Exception}",
+                "Crash",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            args.Handled = true;   // empêcher le crash
+        };
+
+        AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+        {
+            if (args.ExceptionObject is Exception ex)
+            {
+                Current?.Dispatcher.Invoke(() =>
+                    MessageBox.Show($"Exception terminale :\n\n{ex}", "Crash fatal"));
+            }
+        };
+
+        TaskScheduler.UnobservedTaskException += (s, args) =>
+        {
+            Current?.Dispatcher.Invoke(() =>
+                MessageBox.Show($"Exception async non observée :\n\n{args.Exception}", "Crash async"));
+            args.SetObserved();
+        };
+
 
         // Configuration
         var builder = new ConfigurationBuilder()
@@ -40,6 +70,13 @@ public partial class App : Application
         var loginWindow = Services.GetRequiredService<LoginWindow>();
         loginWindow.Show();
     }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        (Services as IDisposable)?.Dispose();
+        base.OnExit(e);
+    }
+
 
     private void ConfigureServices(IServiceCollection services)
     {
@@ -68,7 +105,8 @@ public partial class App : Application
         services.AddHttpClient<IFournisseursApiClient, FournisseursApiClient>(c =>
         {
             c.BaseAddress = new Uri(apiBaseUrl);
-        }) .AddHttpMessageHandler<AuthHttpHandler>();
+        }) 
+        .AddHttpMessageHandler<AuthHttpHandler>();
 
         // Client pour les opérations sur les clients, avec injection automatique du token JWT via AuthHttpHandler
         services.AddHttpClient<IClientsApiClient, ClientsApiClient>(c =>

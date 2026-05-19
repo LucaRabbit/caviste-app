@@ -162,7 +162,7 @@ public class FournisseursViewModel : ViewModelBase
     {
         var window = new EditWindow(vm)
         {
-            Owner = Application.Current.MainWindow
+            Owner = App.MainAppWindow
         };
         return window.ShowDialog() == true;
     }

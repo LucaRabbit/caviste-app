@@ -1,6 +1,7 @@
 ﻿using CavisteApp.Api.Constants;
 using CavisteApp.Api.Data;
 using CavisteApp.Api.Entities;
+using CavisteApp.Api.Services.Stock;
 using CavisteApp.DTOs.Enums;
 using CavisteApp.DTOs.Vins;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +18,11 @@ namespace CavisteApp.Api.Controllers
     {
 
         private readonly CavisteDbContext _context;
-
-        public VinsController(CavisteDbContext context)
+        private readonly AlerteStockService _alerteStock;
+        public VinsController(CavisteDbContext context, AlerteStockService alerteStock)
         {
             _context = context;
+            _alerteStock = alerteStock;
         }
 
         // GET: api/
@@ -167,7 +169,23 @@ namespace CavisteApp.Api.Controllers
                 return Conflict($"Le retrait de {request.Quantite} unités dépasse le stock actuel de {vin.Stock}.");
             }
 
+            // Capture du stock AVANT modification
+            var stockAvant = vin.Stock;
+
+            // Décrément
             vin.Stock -= request.Quantite;
+
+            // Alerte de stock bas (après commit, best-effort)
+            try
+            {
+                await _alerteStock.VerifierEtAlerterAsync(vin, stockAvant);
+            }
+            catch (Exception)
+            {
+                // Log mais on ne fait pas échouer la requête : le retrait est valide
+                // _logger.LogWarning(ex, "Échec d'alerte stock pour le vin {VinId}", id);
+            }
+
 
             await _context.SaveChangesAsync();
             return Ok(MapToDto(vin));

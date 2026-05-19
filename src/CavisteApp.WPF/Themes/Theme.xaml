@@ -2,12 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- ─── Palette de couleurs ─────────────────────────── -->
-    <Color x:Key="PrimaryColor">#722F37</Color>
+    <Color x:Key="PrimaryColor">#526D82</Color>
     <!-- bordeaux -->
-    <Color x:Key="PrimaryDarkColor">#4A1E24</Color>
-    <Color x:Key="AccentColor">#D4A574</Color>
+    <Color x:Key="PrimaryDarkColor">#27374D</Color>
+    <Color x:Key="AccentColor">#9DB2BF</Color>
     <!-- doré -->
-    <Color x:Key="BackgroundColor">#FAF7F2</Color>
+    <Color x:Key="BackgroundColor">#9DB2BF</Color>
     <Color x:Key="SurfaceColor">#FFFFFF</Color>
     <Color x:Key="TextColor">#2C2C2C</Color>
     <Color x:Key="TextMutedColor">#6B6B6B</Color>
@@ -61,10 +61,46 @@
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
     </Style>
 
+    <!-- Boutons système (barre de titre custom) -->
+
+    <Style x:Key="BoutonSysteme" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#3D5878"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BoutonFermeture" TargetType="Button" BasedOn="{StaticResource BoutonSysteme}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#E81123"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- ─── TextBox ─────────────────────────────────────── -->
     <Style TargetType="TextBox">
         <Setter Property="Padding" Value="8,6"/>
-        <Setter Property="BorderBrush" Value="#D0D0D0"/>
+        <Setter Property="BorderBrush" Value="#9DB2BF"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontSize" Value="13"/>
     </Style>
