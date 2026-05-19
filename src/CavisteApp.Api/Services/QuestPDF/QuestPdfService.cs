@@ -43,7 +43,7 @@ public class QuestPdfService
                         // En-tête du ticket
                         column.Item().Row(row =>
                         {
-                            row.RelativeColumn().AlignCenter().Text("CAVISTE APP")
+                            row.RelativeColumn().AlignCenter().Text("CAVISTE APP 🍷")
                                 .FontSize(20)
                                 .Bold();
 
