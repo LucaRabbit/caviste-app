@@ -1,0 +1,78 @@
+﻿<!-- Views/ImportVinsView.xaml -->
+<UserControl x:Class="CavisteApp.WPF.Views.ImportVinsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel Margin="10">
+
+        <!-- Titre -->
+        <TextBlock DockPanel.Dock="Top" Text="Importer des vins depuis l'API externe"
+                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <!-- Barre de recherche -->
+        <Border DockPanel.Dock="Top" BorderBrush="#DDD" BorderThickness="1"
+                Padding="10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Mot-clé de recherche"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Limite" Margin="8,0,0,0"/>
+
+                <TextBox Grid.Row="1" Grid.Column="0"
+                         Text="{Binding Recherche, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,8,0"/>
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Text="{Binding LimiteTexte, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,8,0"/>
+                <Button Grid.Row="1" Grid.Column="2" Content="Rechercher"
+                        Command="{Binding RechercherCommand}" Padding="14,0"/>
+            </Grid>
+        </Border>
+
+        <!-- Messages -->
+        <TextBlock DockPanel.Dock="Top" Text="{Binding MessageErreur}"
+                   Foreground="Red" Margin="0,0,0,5" TextWrapping="Wrap"/>
+        <TextBlock DockPanel.Dock="Top" Text="{Binding MessageSuccess}"
+                   Foreground="Green" Margin="0,0,0,5" TextWrapping="Wrap" FontWeight="Bold"/>
+
+        <!-- Indicateur de chargement -->
+        <TextBlock DockPanel.Dock="Top" Text="Recherche en cours..."
+                   Foreground="Gray" FontStyle="Italic" Margin="0,0,0,5"
+                   Visibility="{Binding EnChargement, Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Bouton importer en bas -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="0,10,0,0">
+            <TextBlock Text="Import en cours..." VerticalAlignment="Center" Margin="0,0,15,0"
+                       Foreground="Gray" FontStyle="Italic"
+                       Visibility="{Binding EnImport, Converter={StaticResource BoolToVisibility}}"/>
+            <Button Content="Importer ces résultats"
+                    Command="{Binding ImporterCommand}"
+                    Padding="14,6"
+                    Background="#2D7A2D" Foreground="White"/>
+        </StackPanel>
+
+        <!-- Liste des résultats -->
+        <DataGrid ItemsSource="{Binding Resultats}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True" CanUserAddRows="False"
+                  SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nom"         Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Millésime"   Binding="{Binding Vintage}" Width="80"/>
+                <DataGridTextColumn Header="Type"        Binding="{Binding Type}" Width="100"/>
+                <DataGridTextColumn Header="Producteur"  Binding="{Binding Winery}" Width="150"/>
+                <DataGridTextColumn Header="Région"      Binding="{Binding Region}" Width="120"/>
+                <DataGridTextColumn Header="Pays"        Binding="{Binding Country}" Width="80"/>
+                <DataGridTextColumn Header="Note"        Binding="{Binding AverageRating, StringFormat=N1}" Width="60"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
