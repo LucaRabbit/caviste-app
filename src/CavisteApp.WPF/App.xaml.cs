@@ -32,18 +32,22 @@ public partial class App : Application
                 "Crash",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
-            args.Handled = true;   // empêche le crash
+            args.Handled = true;   // empêcher le crash
         };
 
         AppDomain.CurrentDomain.UnhandledException += (s, args) =>
         {
             if (args.ExceptionObject is Exception ex)
-                MessageBox.Show($"Exception terminale :\n\n{ex}", "Crash fatal");
+            {
+                Current?.Dispatcher.Invoke(() =>
+                    MessageBox.Show($"Exception terminale :\n\n{ex}", "Crash fatal"));
+            }
         };
 
         TaskScheduler.UnobservedTaskException += (s, args) =>
         {
-            MessageBox.Show($"Exception async non observée :\n\n{args.Exception}", "Crash async");
+            Current?.Dispatcher.Invoke(() =>
+                MessageBox.Show($"Exception async non observée :\n\n{args.Exception}", "Crash async"));
             args.SetObserved();
         };
 
@@ -66,6 +70,13 @@ public partial class App : Application
         var loginWindow = Services.GetRequiredService<LoginWindow>();
         loginWindow.Show();
     }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        (Services as IDisposable)?.Dispose();
+        base.OnExit(e);
+    }
+
 
     private void ConfigureServices(IServiceCollection services)
     {
@@ -94,7 +105,8 @@ public partial class App : Application
         services.AddHttpClient<IFournisseursApiClient, FournisseursApiClient>(c =>
         {
             c.BaseAddress = new Uri(apiBaseUrl);
-        }) .AddHttpMessageHandler<AuthHttpHandler>();
+        }) 
+        .AddHttpMessageHandler<AuthHttpHandler>();
 
         // Client pour les opérations sur les clients, avec injection automatique du token JWT via AuthHttpHandler
         services.AddHttpClient<IClientsApiClient, ClientsApiClient>(c =>

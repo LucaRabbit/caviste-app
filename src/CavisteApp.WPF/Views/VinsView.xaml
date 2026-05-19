@@ -20,12 +20,13 @@
                     Padding="10,4" Margin="0,0,8,0"
                     Visibility="{Binding EstAdministrateur,
                                  Converter={StaticResource BoolToVisibility}}"/>
-
+            
             <Button Content="Supprimer"
                     Command="{Binding SupprimerCommand}"
                     Padding="10,4" Margin="0,0,8,0"
                     Visibility="{Binding EstAdministrateur,
                                  Converter={StaticResource BoolToVisibility}}"/>
+
 
             <Button Content="Inventaire" Command="{Binding InventaireCommand}" 
                     Padding="10,4" Margin="0,0,8,0"

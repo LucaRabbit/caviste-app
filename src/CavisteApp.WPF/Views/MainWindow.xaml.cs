@@ -28,6 +28,8 @@ public partial class MainWindow : Window
     private void BtnDeconnexion_Click(object sender, RoutedEventArgs e)
     {
         _session.Deconnecter();
+        App.MainAppWindow = null;
+
         var loginWindow = App.Services.GetRequiredService<LoginWindow>();
         loginWindow.Show();
         Close();
